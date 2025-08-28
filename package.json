@@ -34,5 +34,9 @@
   },
   "author": "vahan-gev",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vahan-gev/emeraldengine.git"
+  },
   "devDependencies": {}
 }

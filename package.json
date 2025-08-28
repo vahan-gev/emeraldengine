@@ -1,0 +1,38 @@
+{
+  "name": "emeraldengine",
+  "version": "2.0.0",
+  "description": "2D graphics library for Web",
+  "type": "module",
+  "main": "index.js",
+  "module": "index.js",
+  "types": "dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./index.js",
+      "require": "./index.js",
+      "default": "./index.js"
+    }
+  },
+  "files": [
+    "index.js",
+    "imports",
+    "dist/types"
+  ],
+  "keywords": [
+    "2D",
+    "graphics",
+    "game",
+    "engine",
+    "webgl",
+    "canvas"
+  ],
+  "dependencies": {
+    "gl-matrix": "^3.4.3",
+    "planck": "^1.4.2",
+    "colyseus.js": "^0.16.16"
+  },
+  "author": "vahan-gev",
+  "license": "MIT",
+  "devDependencies": {}
+}

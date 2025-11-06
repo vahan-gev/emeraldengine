@@ -16,8 +16,6 @@ class EventManager {
     this.keyDownListeners = new Map();
     this.keyUpListeners = new Map();
     this.clickListeners = new Map();
-    this.canvasWidth = canvas.width;
-    this.canvasHeight = canvas.height;
     this.hoverListeners = new Map();
     this.lastHoveredObject = null;
     this.lastHoveredInstance = null;
@@ -187,9 +185,9 @@ class EventManager {
 
     // Convert to world coordinates
     const worldX =
-      canvasX - this.canvasWidth / 2 - this.camera.transform.position.x;
+      canvasX - this.canvas.width / 2 - this.camera.transform.position.x;
     const worldY =
-      this.canvasHeight / 2 - canvasY - this.camera.transform.position.y;
+      this.canvas.height / 2 - canvasY - this.camera.transform.position.y;
 
     this.scene.objects.forEach((sceneObject) => {
       if (!sceneObject.isActive) return; // Skip inactive objects
@@ -326,9 +324,9 @@ class EventManager {
 
     // Convert to world coordinates
     const worldX =
-      canvasX - this.canvasWidth / 2 - this.camera.transform.position.x;
+      canvasX - this.canvas.width / 2 - this.camera.transform.position.x;
     const worldY =
-      this.canvasHeight / 2 - canvasY - this.camera.transform.position.y;
+      this.canvas.height / 2 - canvasY - this.camera.transform.position.y;
     this.mousePosition.x = worldX;
     this.mousePosition.y = worldY;
     let hoveredObject = null;

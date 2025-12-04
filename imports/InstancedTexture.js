@@ -406,13 +406,18 @@ class InstancedTexture extends Drawable {
       const col = frame % this.framesPerRow;
       const row = Math.floor(frame / this.framesPerRow);
 
-      texLeft = ((col + 1) * this.frameWidth) / this.textureWidth;
-      texRight = (col * this.frameWidth) / this.textureWidth;
+      const halfTexelWidth = 0.5 / this.textureWidth;
+      const halfTexelHeight = 0.5 / this.textureHeight;
+
+      texLeft = ((col + 1) * this.frameWidth) / this.textureWidth - halfTexelWidth;
+      texRight = (col * this.frameWidth) / this.textureWidth + halfTexelWidth;
       texTop =
         (this.textureHeight - row * this.frameHeight - this.frameHeight) /
-        this.textureHeight;
+          this.textureHeight +
+        halfTexelHeight;
       texBottom =
-        (this.textureHeight - row * this.frameHeight) / this.textureHeight;
+        (this.textureHeight - row * this.frameHeight) / this.textureHeight -
+        halfTexelHeight;
     } else {
       // Static image
       texLeft = 1.0;

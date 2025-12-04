@@ -50,7 +50,7 @@ class Drawable {
     this.texture = null;
     this.useTexture = useTexture;
     if (useTexture) {
-      this.initTexture().then(() => {});
+      this.initTexture().then(() => { });
     }
     this.frameWidth = frameWidth;
     this.frameHeight = frameHeight;
@@ -73,7 +73,7 @@ class Drawable {
     this.parentObject = null;
     this.isActive = false;
     this.isWireframe = false;
-    this.callbackFunction = () => {};
+    this.callbackFunction = () => { };
     this.pixelart = pixelart;
     this.useLighting = useLighting; // Default to true to maintain existing behavior
   }
@@ -430,13 +430,18 @@ class Drawable {
         const col = this.currentFrame % this.framesPerRow;
         const row = Math.floor(this.currentFrame / this.framesPerRow);
 
-        texLeft = ((col + 1) * this.frameWidth) / this.textureWidth;
-        texRight = (col * this.frameWidth) / this.textureWidth;
+        const halfTexelWidth = 0.5 / this.textureWidth;
+        const halfTexelHeight = 0.5 / this.textureHeight;
+
+        texLeft = ((col + 1) * this.frameWidth) / this.textureWidth - halfTexelWidth;
+        texRight = (col * this.frameWidth) / this.textureWidth + halfTexelWidth;
         texTop =
           (this.textureHeight - row * this.frameHeight - this.frameHeight) /
-          this.textureHeight;
+          this.textureHeight +
+          halfTexelHeight;
         texBottom =
-          (this.textureHeight - row * this.frameHeight) / this.textureHeight;
+          (this.textureHeight - row * this.frameHeight) / this.textureHeight -
+          halfTexelHeight;
       } else {
         // Static image
         texLeft = 1.0;
@@ -447,25 +452,25 @@ class Drawable {
       // If mirrored change texLeft and texRight in places
       const texCoords = this.mirrored
         ? new Float32Array([
-            texRight,
-            texBottom,
-            texLeft,
-            texBottom,
-            texRight,
-            texTop,
-            texLeft,
-            texTop,
-          ])
+          texRight,
+          texBottom,
+          texLeft,
+          texBottom,
+          texRight,
+          texTop,
+          texLeft,
+          texTop,
+        ])
         : new Float32Array([
-            texLeft,
-            texBottom,
-            texRight,
-            texBottom,
-            texLeft,
-            texTop,
-            texRight,
-            texTop,
-          ]);
+          texLeft,
+          texBottom,
+          texRight,
+          texBottom,
+          texLeft,
+          texTop,
+          texRight,
+          texTop,
+        ]);
       // Update texture coordinate buffer
       this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.texCoordBuffer);
       this.gl.bufferData(this.gl.ARRAY_BUFFER, texCoords, this.gl.STATIC_DRAW);
@@ -493,9 +498,9 @@ class Drawable {
       vertexCount = this.vertices.length / 2;
     }
 
-    if(this.isWireframe) {
+    if (this.isWireframe) {
       // Fix the wireframe for square
-      if(this.vertices.length === 8) {
+      if (this.vertices.length === 8) {
         let tempBuffer = this.gl.createBuffer();
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, tempBuffer);
 

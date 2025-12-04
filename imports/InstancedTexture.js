@@ -198,8 +198,12 @@ class InstancedTexture extends Drawable {
     if (index >= 0 && index < this.instanceCount) {
       const matrix = mat4.create();
       const position = [
-        this.instances[index].transform.position.x,
-        this.instances[index].transform.position.y,
+        this.pixelart
+          ? Math.round(this.instances[index].transform.position.x)
+          : this.instances[index].transform.position.x,
+        this.pixelart
+          ? Math.round(this.instances[index].transform.position.y)
+          : this.instances[index].transform.position.y,
         this.instances[index].transform.position.z,
       ];
       const scale = [
@@ -406,18 +410,13 @@ class InstancedTexture extends Drawable {
       const col = frame % this.framesPerRow;
       const row = Math.floor(frame / this.framesPerRow);
 
-      const halfTexelWidth = 0.5 / this.textureWidth;
-      const halfTexelHeight = 0.5 / this.textureHeight;
-
-      texLeft = ((col + 1) * this.frameWidth) / this.textureWidth - halfTexelWidth;
-      texRight = (col * this.frameWidth) / this.textureWidth + halfTexelWidth;
+      texLeft = ((col + 1) * this.frameWidth) / this.textureWidth;
+      texRight = (col * this.frameWidth) / this.textureWidth;
       texTop =
         (this.textureHeight - row * this.frameHeight - this.frameHeight) /
-          this.textureHeight +
-        halfTexelHeight;
+        this.textureHeight;
       texBottom =
-        (this.textureHeight - row * this.frameHeight) / this.textureHeight -
-        halfTexelHeight;
+        (this.textureHeight - row * this.frameHeight) / this.textureHeight;
     } else {
       // Static image
       texLeft = 1.0;
@@ -429,25 +428,25 @@ class InstancedTexture extends Drawable {
     // Return texture coordinates (considering mirroring)
     return this.mirrored
       ? [
-          texRight,
-          texBottom,
-          texLeft,
-          texBottom,
-          texRight,
-          texTop,
-          texLeft,
-          texTop,
-        ]
+        texRight,
+        texBottom,
+        texLeft,
+        texBottom,
+        texRight,
+        texTop,
+        texLeft,
+        texTop,
+      ]
       : [
-          texLeft,
-          texBottom,
-          texRight,
-          texBottom,
-          texLeft,
-          texTop,
-          texRight,
-          texTop,
-        ];
+        texLeft,
+        texBottom,
+        texRight,
+        texBottom,
+        texLeft,
+        texTop,
+        texRight,
+        texTop,
+      ];
   }
 
   /**

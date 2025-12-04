@@ -336,8 +336,12 @@ class Drawable {
       objectTransformMatrix,
       objectTransformMatrix,
       vec3.fromValues(
-        objectTransform.position.x,
-        objectTransform.position.y,
+        this.pixelart
+          ? Math.round(objectTransform.position.x)
+          : objectTransform.position.x,
+        this.pixelart
+          ? Math.round(objectTransform.position.y)
+          : objectTransform.position.y,
         objectTransform.position.z
       )
     );
@@ -430,18 +434,13 @@ class Drawable {
         const col = this.currentFrame % this.framesPerRow;
         const row = Math.floor(this.currentFrame / this.framesPerRow);
 
-        const halfTexelWidth = 0.5 / this.textureWidth;
-        const halfTexelHeight = 0.5 / this.textureHeight;
-
-        texLeft = ((col + 1) * this.frameWidth) / this.textureWidth - halfTexelWidth;
-        texRight = (col * this.frameWidth) / this.textureWidth + halfTexelWidth;
+        texLeft = ((col + 1) * this.frameWidth) / this.textureWidth;
+        texRight = (col * this.frameWidth) / this.textureWidth;
         texTop =
           (this.textureHeight - row * this.frameHeight - this.frameHeight) /
-          this.textureHeight +
-          halfTexelHeight;
+          this.textureHeight;
         texBottom =
-          (this.textureHeight - row * this.frameHeight) / this.textureHeight -
-          halfTexelHeight;
+          (this.textureHeight - row * this.frameHeight) / this.textureHeight;
       } else {
         // Static image
         texLeft = 1.0;

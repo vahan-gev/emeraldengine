@@ -3,15 +3,13 @@
  * @description Manages the scene for the game
  */
 class SceneManager {
-  static scene = null;
-
   /**
    * @method setScene
    * @description Sets the scene
    * @param {Scene} scene - The scene to set
    */
   static setScene(scene) {
-    this.scene = scene;
+    SceneManager.scene = scene;
   }
 
   /**
@@ -20,8 +18,10 @@ class SceneManager {
    * @returns {Scene} - The scene
    */
   static getScene() {
-    return this.scene;
+    return SceneManager.scene;
   }
 }
+
+SceneManager.scene = null;
 
 export default SceneManager;

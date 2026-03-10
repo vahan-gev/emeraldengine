@@ -4,15 +4,13 @@
  * @param {number} deltaTime - The delta time
  */
 class Time {
-  static deltaTime = 0;
-
   /**
    * @method getDeltaTime
    * @description Returns the delta time
    * @returns {number} - The delta time
    */
   static getDeltaTime() {
-    return this.deltaTime;
+    return Time.deltaTime;
   }
 
   /**
@@ -21,8 +19,10 @@ class Time {
    * @param {number} deltaTime - The delta time
    */
   static setDeltaTime(deltaTime) {
-    this.deltaTime = deltaTime;
+    Time.deltaTime = deltaTime;
   }
 }
+
+Time.deltaTime = 0;
 
 export default Time;

@@ -35,7 +35,11 @@ class Scene {
       throw new Error("Object is not a GameObject");
     }
     object.setIsActive(false);
-    this.objects = this.objects.filter((obj) => obj?.id !== object?.id);
+    this.objects = this.objects.filter(function (obj) {
+      var objId = obj ? obj.id : undefined;
+      var targetId = object ? object.id : undefined;
+      return objId !== targetId;
+    });
   }
 
   /**

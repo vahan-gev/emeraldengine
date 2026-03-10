@@ -44,7 +44,10 @@ class CircleCollider extends Collider {
    * @description Shows the debug shape of the collider
    */
   showDebugShape() {
-    SceneManager.getScene()?.add(this.debugShape.gameObject);
+    var scene = SceneManager.getScene();
+    if (scene) {
+      scene.add(this.debugShape.gameObject);
+    }
   }
 
   /**
@@ -52,7 +55,10 @@ class CircleCollider extends Collider {
    * @description Hides the debug shape of the collider
    */
   hideDebugShape() {
-    SceneManager.getScene()?.remove(this.debugShape.gameObject);
+    var scene = SceneManager.getScene();
+    if (scene) {
+      scene.remove(this.debugShape.gameObject);
+    }
   }
 
   /**

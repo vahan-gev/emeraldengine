@@ -5,6 +5,7 @@ build/
 coverage/
 .vscode/
 .idea/
+.git/
 *.log
 *.cache
 *.tmp

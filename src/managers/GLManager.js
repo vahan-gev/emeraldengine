@@ -3,17 +3,13 @@
  * @description Manages the WebGL context for the game
  */
 class GLManager {
-  static gl = null;
-  static programInfo = null;
-  static canvas = null;
-
   /**
    * @method setGL
    * @description Sets the WebGL context
    * @param {WebGLRenderingContext} gl - The WebGL context
    */
   static setGL(gl) {
-    this.gl = gl;
+    GLManager.gl = gl;
   }
 
   /**
@@ -22,7 +18,7 @@ class GLManager {
    * @param {Object} programInfo - The program info
    */
   static setProgramInfo(programInfo) {
-    this.programInfo = programInfo;
+    GLManager.programInfo = programInfo;
   }
 
   /**
@@ -31,7 +27,7 @@ class GLManager {
    * @param {HTMLCanvasElement} canvas - The canvas
    */
   static setCanvas(canvas) {
-    this.canvas = canvas;
+    GLManager.canvas = canvas;
   }
 
   /**
@@ -40,7 +36,7 @@ class GLManager {
    * @returns {WebGLRenderingContext} - The WebGL context
    */
   static getGL() {
-    return this.gl;
+    return GLManager.gl;
   }
 
   /**
@@ -49,7 +45,7 @@ class GLManager {
    * @returns {Object} - The program info
    */
   static getProgramInfo() {
-    return this.programInfo;
+    return GLManager.programInfo;
   }
 
   /**
@@ -58,8 +54,12 @@ class GLManager {
    * @returns {HTMLCanvasElement} - The canvas
    */
   static getCanvas() {
-    return this.canvas;
+    return GLManager.canvas;
   }
 }
+
+GLManager.gl = null;
+GLManager.programInfo = null;
+GLManager.canvas = null;
 
 export default GLManager;

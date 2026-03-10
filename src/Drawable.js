@@ -542,13 +542,14 @@ class Drawable {
    * @param {string} path - The path to the image
    * @returns {Promise} - The promise
    */
-  loadImage = (path) =>
-    new Promise((resolve, reject) => {
-      const image = new Image();
-      image.addEventListener("load", () => resolve(image));
-      image.addEventListener("error", (err) => reject(err));
+  loadImage(path) {
+    return new Promise(function (resolve, reject) {
+      var image = new Image();
+      image.addEventListener("load", function () { resolve(image); });
+      image.addEventListener("error", function (err) { reject(err); });
       image.src = path;
     });
+  }
 }
 
 export default Drawable;

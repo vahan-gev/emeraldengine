@@ -3,8 +3,6 @@
  * @description Manages the IDs for the game
  */
 class IDManager {
-  static existingIDs = new Set();
-
   /**
    * @method generateID
    * @description Generates a random ID
@@ -20,13 +18,15 @@ class IDManager {
    * @returns {string} - The unique ID
    */
   static generateUniqueID() {
-    let id;
+    var id;
     do {
-      id = this.generateID();
-    } while (this.existingIDs.has(id));
-    this.existingIDs.add(id);
+      id = IDManager.generateID();
+    } while (IDManager.existingIDs.has(id));
+    IDManager.existingIDs.add(id);
     return id;
   }
 }
+
+IDManager.existingIDs = new Set();
 
 export default IDManager;

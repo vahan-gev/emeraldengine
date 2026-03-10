@@ -49,7 +49,7 @@ class GameObject {
    * @param {Component} component - The component to remove
    */
   removeComponent(component) {
-    if(!component || !this.components.includes(component)) {
+    if (!component || !this.components.includes(component)) {
       throw new Error(`Component ${component.name} not found in ${this.name}`);
     }
     if (component instanceof RigidBody) {
@@ -129,7 +129,7 @@ class GameObject {
     const drawable = this.getComponent(Drawable);
     const rigidBody = this.getComponent(RigidBody);
     const collider = this.getComponent(Collider);
-    if (rigidBody && rigidBody?.getType() === "dynamic") {
+    if (rigidBody && rigidBody.getType() === "dynamic") {
       const updatedPos = rigidBody.getBody().getPosition();
       const rigidBodyOffset = rigidBody.getOffset();
       const physicsScale = rigidBody.getPhysics().getScale();

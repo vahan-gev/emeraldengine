@@ -1,62 +1,62 @@
 {
-  "name": "emeraldengine",
-  "version": "2.1.2",
-  "description": "2D graphics library for Web",
-  "type": "module",
-  "main": "index.js",
-  "module": "index.js",
-  "types": "dist/types/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./index.js",
-      "default": "./index.js"
-    }
-  },
-  "files": [
-    "index.js",
-    "src",
-    "dist/types"
-  ],
-  "sideEffects": false,
-  "engines": {
-    "node": ">=12.0.0"
-  },
-  "keywords": [
-    "2D",
-    "graphics",
-    "game",
-    "engine",
-    "webgl",
-    "webgl2",
-    "canvas",
-    "gamedev",
-    "rendering",
-    "sprite",
-    "particle-system",
-    "physics"
-  ],
-  "dependencies": {
-    "gl-matrix": "^3.4.3",
-    "planck": "^1.4.2"
-  },
-  "peerDependencies": {
-    "colyseus.js": "^0.16.16"
-  },
-  "peerDependenciesMeta": {
-    "colyseus.js": {
-      "optional": true
-    }
-  },
-  "author": "vahan-gev",
-  "license": "MIT",
-  "homepage": "https://github.com/vahan-gev/emeraldengine#readme",
-  "bugs": {
-    "url": "https://github.com/vahan-gev/emeraldengine/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/vahan-gev/emeraldengine.git"
-  },
-  "devDependencies": {}
+    "name": "emeraldengine",
+    "version": "2.2.0",
+    "description": "2D graphics library for Web",
+    "type": "module",
+    "main": "index.js",
+    "module": "index.js",
+    "types": "dist/types/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/types/index.d.ts",
+            "import": "./index.js",
+            "default": "./index.js"
+        }
+    },
+    "files": [
+        "index.js",
+        "src",
+        "dist/types"
+    ],
+    "sideEffects": false,
+    "engines": {
+        "node": ">=12.0.0"
+    },
+    "keywords": [
+        "2D",
+        "graphics",
+        "game",
+        "engine",
+        "webgl",
+        "webgl2",
+        "canvas",
+        "gamedev",
+        "rendering",
+        "sprite",
+        "particle-system",
+        "physics"
+    ],
+    "dependencies": {
+        "gl-matrix": "^3.4.3",
+        "planck": "^1.4.2"
+    },
+    "peerDependencies": {
+        "colyseus.js": "^0.16.16"
+    },
+    "peerDependenciesMeta": {
+        "colyseus.js": {
+            "optional": true
+        }
+    },
+    "author": "vahan-gev",
+    "license": "MIT",
+    "homepage": "https://github.com/vahan-gev/emeraldengine#readme",
+    "bugs": {
+        "url": "https://github.com/vahan-gev/emeraldengine/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/vahan-gev/emeraldengine.git"
+    },
+    "devDependencies": {}
 }

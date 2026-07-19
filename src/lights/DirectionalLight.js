@@ -26,7 +26,6 @@ class DirectionalLight {
    * @returns {number} - Light intensity (0-1)
    */
   getIntensityAtPoint(point) {
-
     const dx = point.x - this.position.x;
     const dy = point.y - this.position.y;
     const distance = Math.sqrt(dx * dx + dy * dy);

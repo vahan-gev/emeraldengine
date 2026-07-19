@@ -184,7 +184,11 @@ class AssetManager {
     if (typeof FontFace === "undefined" || !document.fonts) {
       return null;
     }
-    const face = new FontFace(spec.family, `url(${spec.path})`, spec.descriptors);
+    const face = new FontFace(
+      spec.family,
+      `url(${spec.path})`,
+      spec.descriptors
+    );
     const loaded = await face.load();
     document.fonts.add(loaded);
     return loaded;

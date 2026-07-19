@@ -256,7 +256,12 @@ class GameObject {
       const worldTransform = this.transform.parent
         ? this.transform.getWorldTransform()
         : this.transform;
-      drawable.draw(globalViewMatrix, uniformLocation, currentTime, worldTransform);
+      drawable.draw(
+        globalViewMatrix,
+        uniformLocation,
+        currentTime,
+        worldTransform
+      );
     }
   }
 }

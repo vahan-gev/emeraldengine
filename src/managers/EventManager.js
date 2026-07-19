@@ -43,7 +43,7 @@ class EventManager {
     window.addEventListener("keydown", this.boundHandleKeyDown);
     window.addEventListener("keyup", this.boundHandleKeyUp);
   }
-  
+
   /**
    * @method addKeyDown
    * @description Adds a key down event listener

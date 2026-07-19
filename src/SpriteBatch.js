@@ -223,7 +223,14 @@ class SpriteBatch {
     gl.enableVertexAttribArray(this.attribs.uv);
     gl.vertexAttribPointer(this.attribs.uv, 2, gl.FLOAT, false, stride, 2 * 4);
     gl.enableVertexAttribArray(this.attribs.color);
-    gl.vertexAttribPointer(this.attribs.color, 4, gl.FLOAT, false, stride, 4 * 4);
+    gl.vertexAttribPointer(
+      this.attribs.color,
+      4,
+      gl.FLOAT,
+      false,
+      stride,
+      4 * 4
+    );
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
     gl.drawElements(
@@ -247,7 +254,23 @@ class SpriteBatch {
    * the quad center (cx, cy). Exposed (and side-effect free) for testing.
    * @private
    */
-  static _writeQuad(out, offset, cx, cy, hw, hh, rot, u0, v0, u1, v1, r, g, b, a) {
+  static _writeQuad(
+    out,
+    offset,
+    cx,
+    cy,
+    hw,
+    hh,
+    rot,
+    u0,
+    v0,
+    u1,
+    v1,
+    r,
+    g,
+    b,
+    a
+  ) {
     const cos = Math.cos(rot);
     const sin = Math.sin(rot);
     const corners = [

@@ -121,9 +121,7 @@ class DebugOverlay {
       }
       this._minMs = min === Infinity ? 0 : min;
       this._maxMs = max;
-      this._avgMs = this._frameTimes.length
-        ? sum / this._frameTimes.length
-        : 0;
+      this._avgMs = this._frameTimes.length ? sum / this._frameTimes.length : 0;
     }
 
     const objectCount = scene && scene.objects ? scene.objects.length : 0;

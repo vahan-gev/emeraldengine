@@ -38,16 +38,7 @@ class InstancedTexture extends Drawable {
   ) {
     const vertices = [1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, -1.0];
     const verticesBuffer = initVertexBuffer(GLManager.getGL(), vertices);
-    const textureCoordinates = [
-      1.0,
-      1.0,
-      0.0,
-      1.0,
-      1.0,
-      0.0,
-      0.0,
-      0.0,
-    ];
+    const textureCoordinates = [1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0];
     const texCoordBuffer = initVertexBuffer(
       GLManager.getGL(),
       textureCoordinates
@@ -340,7 +331,8 @@ class InstancedTexture extends Drawable {
       index < this.instances.length
     ) {
       const instance = this.instances[index];
-      const texCoords = instance._regionUV || this.getFrameTexCoords(instance.frame);
+      const texCoords =
+        instance._regionUV || this.getFrameTexCoords(instance.frame);
 
       const offset = index * 8;
       for (let i = 0; i < 8; i++) {
@@ -506,25 +498,25 @@ class InstancedTexture extends Drawable {
 
     return this.mirrored
       ? [
-        texRight,
-        texBottom,
-        texLeft,
-        texBottom,
-        texRight,
-        texTop,
-        texLeft,
-        texTop,
-      ]
+          texRight,
+          texBottom,
+          texLeft,
+          texBottom,
+          texRight,
+          texTop,
+          texLeft,
+          texTop,
+        ]
       : [
-        texLeft,
-        texBottom,
-        texRight,
-        texBottom,
-        texLeft,
-        texTop,
-        texRight,
-        texTop,
-      ];
+          texLeft,
+          texBottom,
+          texRight,
+          texBottom,
+          texLeft,
+          texTop,
+          texRight,
+          texTop,
+        ];
   }
 
   /**
@@ -538,8 +530,16 @@ class InstancedTexture extends Drawable {
     super._restoreGL();
     const gl = this.gl;
     if (!gl) return;
-    this.instanceMatrixBuffer = initInstancedBuffer(gl, this.instanceMatrices, 16);
-    this.instanceTexCoordBuffer = initInstancedBuffer(gl, this.instanceTexCoords, 8);
+    this.instanceMatrixBuffer = initInstancedBuffer(
+      gl,
+      this.instanceMatrices,
+      16
+    );
+    this.instanceTexCoordBuffer = initInstancedBuffer(
+      gl,
+      this.instanceTexCoords,
+      8
+    );
     this.instanceColorBuffer = initInstancedBuffer(gl, this.instanceColors, 4);
     this._matricesDirty = true;
   }
@@ -554,7 +554,8 @@ class InstancedTexture extends Drawable {
     const gl = this.gl;
     if (gl) {
       if (this.instanceMatrixBuffer) gl.deleteBuffer(this.instanceMatrixBuffer);
-      if (this.instanceTexCoordBuffer) gl.deleteBuffer(this.instanceTexCoordBuffer);
+      if (this.instanceTexCoordBuffer)
+        gl.deleteBuffer(this.instanceTexCoordBuffer);
       if (this.instanceColorBuffer) gl.deleteBuffer(this.instanceColorBuffer);
     }
     this.instanceMatrixBuffer = null;
@@ -576,7 +577,8 @@ class InstancedTexture extends Drawable {
       const rigidBody = instance.getComponent(RigidBody);
       if (!rigidBody || rigidBody.getType() !== "dynamic") continue;
       rigidBody.syncTransform(instance.transform);
-      const collider = rigidBody.getCollider() || instance.getComponent(Collider);
+      const collider =
+        rigidBody.getCollider() || instance.getComponent(Collider);
       if (collider && typeof collider.syncDebugShape === "function") {
         collider.syncDebugShape(instance.transform);
       }

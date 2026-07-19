@@ -199,11 +199,14 @@ class UI {
       new Color(12, 16, 24, 250),
       options.z ?? 0
     );
-    const label = CanvasText.create(options.value || options.placeholder || "", {
-      font: options.font || "500 18px system-ui, sans-serif",
-      color: options.value ? "#e8eefc" : "#7c8aa0",
-      screenSpace: true,
-    });
+    const label = CanvasText.create(
+      options.value || options.placeholder || "",
+      {
+        font: options.font || "500 18px system-ui, sans-serif",
+        color: options.value ? "#e8eefc" : "#7c8aa0",
+        screenSpace: true,
+      }
+    );
     label.setLayer(this.layer);
     label.alwaysVisible = true;
     label.transform.position.z = (options.z ?? 0) + 1;

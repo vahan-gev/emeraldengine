@@ -57,7 +57,9 @@ class EmeraldDB {
     if (EmeraldDB._db) return EmeraldDB._db;
     if (!EmeraldDB.isSupported()) {
       return Promise.reject(
-        new Error("[EmeraldDB] > IndexedDB is not available in this environment.")
+        new Error(
+          "[EmeraldDB] > IndexedDB is not available in this environment."
+        )
       );
     }
     EmeraldDB._db = new Promise((resolve, reject) => {
@@ -78,7 +80,9 @@ class EmeraldDB {
       };
       request.onerror = () => {
         EmeraldDB._db = null;
-        reject(request.error || new Error("[EmeraldDB] > Failed to open database."));
+        reject(
+          request.error || new Error("[EmeraldDB] > Failed to open database.")
+        );
       };
     });
     return EmeraldDB._db;
@@ -104,7 +108,8 @@ class EmeraldDB {
       }
       tx.oncomplete = () => resolve(result);
       tx.onerror = () => reject(tx.error);
-      tx.onabort = () => reject(tx.error || new Error("[EmeraldDB] > Transaction aborted."));
+      tx.onabort = () =>
+        reject(tx.error || new Error("[EmeraldDB] > Transaction aborted."));
     });
   }
 
@@ -189,7 +194,8 @@ class EmeraldDB {
       }
       tx.oncomplete = () => resolve();
       tx.onerror = () => reject(tx.error);
-      tx.onabort = () => reject(tx.error || new Error("[EmeraldDB] > Save aborted."));
+      tx.onabort = () =>
+        reject(tx.error || new Error("[EmeraldDB] > Save aborted."));
     });
   }
 
@@ -258,8 +264,7 @@ class EmeraldDB {
     if (bak != null) {
       try {
         await EmeraldDB.set(key + ".bak", JSON.parse(bak));
-      } catch {
-      }
+      } catch {}
     }
     return true;
   }
@@ -273,8 +278,7 @@ class EmeraldDB {
     try {
       const db = await EmeraldDB._db;
       db.close();
-    } catch {
-    }
+    } catch {}
     EmeraldDB._db = null;
   }
 
@@ -286,7 +290,11 @@ class EmeraldDB {
    */
   static _asEnvelope(value) {
     if (value === undefined || value === null) return null;
-    if (typeof value === "object" && typeof value.v === "number" && "data" in value) {
+    if (
+      typeof value === "object" &&
+      typeof value.v === "number" &&
+      "data" in value
+    ) {
       return value;
     }
     return { v: 0, t: 0, data: value };
@@ -304,7 +312,10 @@ class EmeraldDB {
     if (!envelope) return { data: fallback, migrated: false };
     if (envelope.v === version) return { data: envelope.data, migrated: false };
     if (typeof options.migrate === "function") {
-      return { data: options.migrate(envelope.data, envelope.v), migrated: true };
+      return {
+        data: options.migrate(envelope.data, envelope.v),
+        migrated: true,
+      };
     }
     return { data: fallback, migrated: false };
   }

@@ -73,8 +73,7 @@ class CanvasText extends Drawable {
   setText(text) {
     this.text = text;
     const ctx = this._ctx;
-    const dpr =
-      (typeof window !== "undefined" && window.devicePixelRatio) || 1;
+    const dpr = (typeof window !== "undefined" && window.devicePixelRatio) || 1;
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.font = this.font;
@@ -96,7 +95,9 @@ class CanvasText extends Drawable {
       }
       maxLineW = Math.max(maxLineW, lw);
     }
-    const contentW = this.maxWidth ? Math.max(maxLineW, this.maxWidth) : maxLineW;
+    const contentW = this.maxWidth
+      ? Math.max(maxLineW, this.maxWidth)
+      : maxLineW;
     const w = Math.max(1, Math.ceil(contentW) + this.padding * 2);
     const h = lines.length * lineHeight + this.padding * 2;
 
@@ -113,8 +114,8 @@ class CanvasText extends Drawable {
       this.align === "left"
         ? this.padding
         : this.align === "right"
-        ? w - this.padding
-        : w / 2;
+          ? w - this.padding
+          : w / 2;
     for (let i = 0; i < lines.length; i++) {
       const y = this.padding + lineHeight * (i + 0.5);
       ctx.fillText(lines[i], x, y);

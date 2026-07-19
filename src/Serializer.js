@@ -43,7 +43,10 @@ class Serializer {
             scale: { x: t.scale.x, y: t.scale.y },
           }
         : null,
-      data: typeof obj.serialize === "function" ? obj.serialize() : obj.data || null,
+      data:
+        typeof obj.serialize === "function"
+          ? obj.serialize()
+          : obj.data || null,
     };
   }
 

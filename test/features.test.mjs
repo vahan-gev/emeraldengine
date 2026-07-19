@@ -113,7 +113,15 @@ test("ParticleEmitter never exceeds capacity", () => {
 
 test("ParticleEmitter integrates motion and gravity", () => {
   const { fx } = makeStubEmitter(4);
-  fx.emit({ x: 0, y: 0, dir: Math.PI / 2, spread: 0, speed: 100, gy: -100, life: 5 });
+  fx.emit({
+    x: 0,
+    y: 0,
+    dir: Math.PI / 2,
+    spread: 0,
+    speed: 100,
+    gy: -100,
+    life: 5,
+  });
   const p = fx.parts.find((q) => q.alive);
   const y0 = p.y;
   const vy0 = p.vy;
@@ -140,12 +148,23 @@ function stubGamepads(pads) {
 
 function pad(buttonsDown = [], axes = [], extra = {}) {
   const buttons = [];
-  for (let i = 0; i < 17; i++) buttons[i] = { pressed: buttonsDown.includes(i), value: 0 };
-  return { buttons, axes, mapping: "standard", id: "Test Pad", index: 0, ...extra };
+  for (let i = 0; i < 17; i++)
+    buttons[i] = { pressed: buttonsDown.includes(i), value: 0 };
+  return {
+    buttons,
+    axes,
+    mapping: "standard",
+    id: "Test Pad",
+    index: 0,
+    ...extra,
+  };
 }
 
 test("InputManager reads deadzoned analog axes", () => {
-  const input = new InputManager({ target: fakeTarget(), gamepadDeadzone: 0.3 });
+  const input = new InputManager({
+    target: fakeTarget(),
+    gamepadDeadzone: 0.3,
+  });
   // Deadzone 0.3 rescales the remaining 0.3..1 range back onto 0..1, so a raw
   // 0.8 becomes 0.5/0.7 and anything under the deadzone reads as a flat 0.
   input.gamepads = [pad([], [-0.8, 0.1, 0.5, 1.0])];
@@ -202,7 +221,9 @@ test("InputManager getGamepadButton resolves names and stick", () => {
 });
 
 test("InputManager applies a custom mapping for non-standard pads", () => {
-  InputManager.registerGamepadMapping("weirdpad", { buttons: { south: 1, east: 2 } });
+  InputManager.registerGamepadMapping("weirdpad", {
+    buttons: { south: 1, east: 2 },
+  });
   const input = new InputManager({ target: fakeTarget() });
 
   // A standard pad keeps the standard indices...
@@ -266,7 +287,9 @@ const TILED_MAP = {
   height: 2,
   tilewidth: 16,
   tileheight: 16,
-  tilesets: [{ firstgid: 1, columns: 4, tilecount: 16, tilewidth: 16, tileheight: 16 }],
+  tilesets: [
+    { firstgid: 1, columns: 4, tilecount: 16, tilewidth: 16, tileheight: 16 },
+  ],
   layers: [
     {
       type: "tilelayer",
@@ -367,14 +390,19 @@ class FakeAudio {
     this.loop = false;
     this.currentTime = 0;
   }
-  cloneNode() { return new FakeAudio(); }
-  play() { return Promise.resolve(); }
+  cloneNode() {
+    return new FakeAudio();
+  }
+  play() {
+    return Promise.resolve();
+  }
   pause() {}
 }
 
 test("AudioManager routes volume through master * bus * sound", async () => {
   globalThis.Audio = FakeAudio;
-  const { default: AudioManager } = await import("../src/managers/AudioManager.js");
+  const { default: AudioManager } =
+    await import("../src/managers/AudioManager.js");
   const am = new AudioManager({ autoTick: false });
   am.add("a.mp3", "music", { volume: 0.5, bus: "music" });
   const sound = am.getSound("music");
@@ -383,14 +411,18 @@ test("AudioManager routes volume through master * bus * sound", async () => {
   assert.equal(am._effectiveVolume(sound), 1 * 1 * 0.5);
   am.setBusVolume("music", 0.4);
   assert.ok(Math.abs(am._effectiveVolume(sound) - 0.2) < 1e-9); // 1 * 0.4 * 0.5
-  assert.ok(Math.abs(sound.audio.volume - 0.2) < 1e-9, "live element retargeted");
+  assert.ok(
+    Math.abs(sound.audio.volume - 0.2) < 1e-9,
+    "live element retargeted"
+  );
   am.setMasterVolume(0.5);
   assert.ok(Math.abs(am._effectiveVolume(sound) - 0.1) < 1e-9); // 0.5 * 0.4 * 0.5
 });
 
 test("AudioManager.fadeTo ramps the fade multiplier over time", async () => {
   globalThis.Audio = FakeAudio;
-  const { default: AudioManager } = await import("../src/managers/AudioManager.js");
+  const { default: AudioManager } =
+    await import("../src/managers/AudioManager.js");
   const am = new AudioManager({ autoTick: false });
   am.add("m.mp3", "track", { volume: 1, bus: "music" });
   const sound = am.getSound("track");
@@ -435,7 +467,11 @@ test("Storage.load migrates older versions and rewrites", async () => {
     migrate: (d, from) => ({ ...d, shield: 0, _from: from }),
   });
   assert.deepEqual(data, { hp: 10, shield: 0, _from: 1 });
-  assert.deepEqual(Storage.load("p", { version: 2 }), { hp: 10, shield: 0, _from: 1 });
+  assert.deepEqual(Storage.load("p", { version: 2 }), {
+    hp: 10,
+    shield: 0,
+    _from: 1,
+  });
 });
 
 test("Storage.load recovers from backup when primary is corrupt", async () => {
@@ -478,10 +514,14 @@ test("CanvasText.wrapText honors newlines and wrap width", async () => {
 });
 
 test("TextureManager retain/release refcounts and drops cache at zero", async () => {
-  const { default: TextureManager } = await import("../src/managers/TextureManager.js");
+  const { default: TextureManager } =
+    await import("../src/managers/TextureManager.js");
   const path = "test://fake.png";
   const key = `${path}|nearest`;
-  TextureManager.textures.set(key, Promise.resolve({ texture: {}, width: 1, height: 1 }));
+  TextureManager.textures.set(
+    key,
+    Promise.resolve({ texture: {}, width: 1, height: 1 })
+  );
 
   TextureManager.retain(path, true);
   TextureManager.retain(path, true);
@@ -529,7 +569,10 @@ test("getGamepadStick uses a radial deadzone and preserves direction", () => {
   // so a radial deadzone must let it through.
   input.gamepads = [fakePad({ axes: [0.28, 0.28, 0, 0] })];
   const stick = input.getGamepadStick("left");
-  assert.ok(stick.magnitude > 0, "diagonal inside per-axis but outside radial deadzone must register");
+  assert.ok(
+    stick.magnitude > 0,
+    "diagonal inside per-axis but outside radial deadzone must register"
+  );
   assert.ok(Math.abs(stick.x - stick.y) < 1e-9, "direction preserved");
 
   // Full deflection still normalizes to exactly 1.
@@ -537,26 +580,40 @@ test("getGamepadStick uses a radial deadzone and preserves direction", () => {
   assert.ok(Math.abs(input.getGamepadStick("left").magnitude - 1) < 1e-9);
 
   input.gamepads = [fakePad({ axes: [0, -1, 0, 0] })];
-  assert.ok(input.getGamepadStick("left", 0, { invertY: true }).y < 0 === false);
+  assert.ok(
+    input.getGamepadStick("left", 0, { invertY: true }).y < 0 === false
+  );
 });
 
 test("stick direction tokens fire past the press threshold", () => {
-  const input = new InputManager({ target: null, gamepadDeadzone: 0.2, stickPressThreshold: 0.5 });
+  const input = new InputManager({
+    target: null,
+    gamepadDeadzone: 0.2,
+    stickPressThreshold: 0.5,
+  });
   // Left stick hard up (0.9) clears the 0.5 press threshold; right stick at
   // 0.3 does not.
   input.gamepads = [fakePad({ axes: [0, -0.9, 0.3, 0] })];
   const tokens = input._collectGamepadTokens();
   assert.ok(tokens.has("pad:0:leftStickUp"), "hard up must register");
   assert.ok(!tokens.has("pad:0:leftStickDown"));
-  assert.ok(!tokens.has("pad:0:rightStickRight"), "0.3 raw is under the 0.5 press threshold");
+  assert.ok(
+    !tokens.has("pad:0:rightStickRight"),
+    "0.3 raw is under the 0.5 press threshold"
+  );
 });
 
 test("built-in DirectInput profile remaps buttons for known pads", () => {
   const input = new InputManager({ target: null });
   const pressed = (idx, count = 12) =>
-    Array.from({ length: count }, (_, i) => ({ pressed: i === idx, value: i === idx ? 1 : 0 }));
+    Array.from({ length: count }, (_, i) => ({
+      pressed: i === idx,
+      value: i === idx ? 1 : 0,
+    }));
   // On this DirectInput pad button 1 is south...
-  input.gamepads = [fakePad({ id: "Logitech Dual Action", mapping: "", buttons: pressed(1) })];
+  input.gamepads = [
+    fakePad({ id: "Logitech Dual Action", mapping: "", buttons: pressed(1) }),
+  ];
   assert.equal(input.getGamepadButton("south").pressed, true);
   assert.equal(input.getGamepadButton("west").pressed, false);
   // ...but on a standard pad the same index is east.
@@ -567,21 +624,33 @@ test("built-in DirectInput profile remaps buttons for known pads", () => {
 test("EmeraldDB resolves envelopes: exact version, migration, fallback", async () => {
   const { default: EmeraldDB } = await import("../src/EmeraldDB.js");
 
-  const exact = EmeraldDB._resolveEnvelope({ v: 2, t: 1, data: { coins: 5 } }, { version: 2 });
+  const exact = EmeraldDB._resolveEnvelope(
+    { v: 2, t: 1, data: { coins: 5 } },
+    { version: 2 }
+  );
   assert.deepEqual(exact, { data: { coins: 5 }, migrated: false });
 
   const migrated = EmeraldDB._resolveEnvelope(
     { v: 1, t: 1, data: { level: 3 } },
     { version: 2, migrate: (old, from) => ({ ...old, coins: 0, from }) }
   );
-  assert.deepEqual(migrated, { data: { level: 3, coins: 0, from: 1 }, migrated: true });
+  assert.deepEqual(migrated, {
+    data: { level: 3, coins: 0, from: 1 },
+    migrated: true,
+  });
 
   // Older version with no migrate function: fall back rather than hand back
   // data the caller cannot read.
-  const refused = EmeraldDB._resolveEnvelope({ v: 1, t: 1, data: { x: 1 } }, { version: 2, fallback: "F" });
+  const refused = EmeraldDB._resolveEnvelope(
+    { v: 1, t: 1, data: { x: 1 } },
+    { version: 2, fallback: "F" }
+  );
   assert.deepEqual(refused, { data: "F", migrated: false });
 
-  assert.deepEqual(EmeraldDB._resolveEnvelope(null, { fallback: 7 }), { data: 7, migrated: false });
+  assert.deepEqual(EmeraldDB._resolveEnvelope(null, { fallback: 7 }), {
+    data: 7,
+    migrated: false,
+  });
 });
 
 test("EmeraldDB wraps plain pre-versioning values as version 0", async () => {
@@ -599,6 +668,9 @@ test("EmeraldDB wraps plain pre-versioning values as version 0", async () => {
 test("EmeraldDB rejects cleanly where IndexedDB is unavailable", async () => {
   const { default: EmeraldDB } = await import("../src/EmeraldDB.js");
   assert.equal(EmeraldDB.isSupported(), false);
-  await assert.rejects(() => EmeraldDB.set("k", 1), /IndexedDB is not available/);
+  await assert.rejects(
+    () => EmeraldDB.set("k", 1),
+    /IndexedDB is not available/
+  );
   await assert.rejects(() => EmeraldDB.get("k"), /IndexedDB is not available/);
 });

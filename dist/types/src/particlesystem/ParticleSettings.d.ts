@@ -16,7 +16,7 @@ export default ParticleSettings;
  * @param {Array} animation - The animation of the particle
  */
 declare class ParticleSettings {
-    constructor({ lifetime, velocity, gravity, amount, direction, spread, emissionRate, frame, offset, rotation, scale, animation, shape, shapeRadius, shapeSize, scaleOverLife, alphaOverLife, colorOverLife, rotationSpeed, drag }?: {
+    constructor({ lifetime, velocity, gravity, amount, direction, spread, emissionRate, frame, offset, rotation, scale, animation, shape, shapeRadius, shapeSize, scaleOverLife, alphaOverLife, colorOverLife, rotationSpeed, drag, }?: {
         lifetime?: number;
         velocity?: Vector2;
         gravity?: Vector2;

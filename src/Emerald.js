@@ -119,19 +119,46 @@ class Emerald {
         vertexPosition: gl.getAttribLocation(shaderProgram, "aVertexPosition"),
         aTexCoord: gl.getAttribLocation(shaderProgram, "aTextureCoord"),
         instanceMatrix: gl.getAttribLocation(shaderProgram, "aInstanceMatrix0"),
-        instanceTexCoord0: gl.getAttribLocation(shaderProgram, "aInstanceTexCoord0"),
-        instanceTexCoord1: gl.getAttribLocation(shaderProgram, "aInstanceTexCoord1"),
-        instanceTexCoord2: gl.getAttribLocation(shaderProgram, "aInstanceTexCoord2"),
-        instanceTexCoord3: gl.getAttribLocation(shaderProgram, "aInstanceTexCoord3"),
+        instanceTexCoord0: gl.getAttribLocation(
+          shaderProgram,
+          "aInstanceTexCoord0"
+        ),
+        instanceTexCoord1: gl.getAttribLocation(
+          shaderProgram,
+          "aInstanceTexCoord1"
+        ),
+        instanceTexCoord2: gl.getAttribLocation(
+          shaderProgram,
+          "aInstanceTexCoord2"
+        ),
+        instanceTexCoord3: gl.getAttribLocation(
+          shaderProgram,
+          "aInstanceTexCoord3"
+        ),
         instanceColor: gl.getAttribLocation(shaderProgram, "aInstanceColor"),
       },
       uniformLocations: {
-        projectionMatrix: gl.getUniformLocation(shaderProgram, "uProjectionMatrix"),
-        globalViewMatrix: gl.getUniformLocation(shaderProgram, "uModelViewMatrix"),
-        instancedModelViewMatrix: gl.getUniformLocation(shaderProgram, "uInstancedModelViewMatrix"),
+        projectionMatrix: gl.getUniformLocation(
+          shaderProgram,
+          "uProjectionMatrix"
+        ),
+        globalViewMatrix: gl.getUniformLocation(
+          shaderProgram,
+          "uModelViewMatrix"
+        ),
+        instancedModelViewMatrix: gl.getUniformLocation(
+          shaderProgram,
+          "uInstancedModelViewMatrix"
+        ),
         uModelMatrix: gl.getUniformLocation(shaderProgram, "uModelMatrix"),
-        uInstancedModelMatrix: gl.getUniformLocation(shaderProgram, "uInstancedModelMatrix"),
-        uAmbientLightValues: gl.getUniformLocation(shaderProgram, "uAmbientLightValues"),
+        uInstancedModelMatrix: gl.getUniformLocation(
+          shaderProgram,
+          "uInstancedModelMatrix"
+        ),
+        uAmbientLightValues: gl.getUniformLocation(
+          shaderProgram,
+          "uAmbientLightValues"
+        ),
         uSampler: gl.getUniformLocation(shaderProgram, "uSampler"),
         color: gl.getUniformLocation(shaderProgram, "uColor"),
         useTexture: gl.getUniformLocation(shaderProgram, "useTexture"),
@@ -141,15 +168,30 @@ class Emerald {
         uOpacity: gl.getUniformLocation(shaderProgram, "uOpacity"),
         uLightPosition: gl.getUniformLocation(shaderProgram, "uLightPosition"),
         uLightColor: gl.getUniformLocation(shaderProgram, "uLightColor"),
-        uLightIntensity: gl.getUniformLocation(shaderProgram, "uLightIntensity"),
+        uLightIntensity: gl.getUniformLocation(
+          shaderProgram,
+          "uLightIntensity"
+        ),
         uLightRadius: gl.getUniformLocation(shaderProgram, "uLightRadius"),
         uActiveLights: gl.getUniformLocation(shaderProgram, "uActiveLights"),
-        uDirLightPosition: gl.getUniformLocation(shaderProgram, "uDirLightPosition"),
-        uDirLightDirection: gl.getUniformLocation(shaderProgram, "uDirLightDirection"),
+        uDirLightPosition: gl.getUniformLocation(
+          shaderProgram,
+          "uDirLightPosition"
+        ),
+        uDirLightDirection: gl.getUniformLocation(
+          shaderProgram,
+          "uDirLightDirection"
+        ),
         uDirLightColor: gl.getUniformLocation(shaderProgram, "uDirLightColor"),
-        uDirLightIntensity: gl.getUniformLocation(shaderProgram, "uDirLightIntensity"),
+        uDirLightIntensity: gl.getUniformLocation(
+          shaderProgram,
+          "uDirLightIntensity"
+        ),
         uDirLightWidth: gl.getUniformLocation(shaderProgram, "uDirLightWidth"),
-        uActiveDirLights: gl.getUniformLocation(shaderProgram, "uActiveDirLights"),
+        uActiveDirLights: gl.getUniformLocation(
+          shaderProgram,
+          "uActiveDirLights"
+        ),
       },
     };
   }
@@ -172,7 +214,9 @@ class Emerald {
     this._onCtxLost = (e) => {
       e.preventDefault();
       this._contextLost = true;
-      console.warn("[Emerald] > WebGL context lost — rendering paused until restore.");
+      console.warn(
+        "[Emerald] > WebGL context lost — rendering paused until restore."
+      );
       for (const h of this._contextLostHandlers) h();
     };
     /** @private */
@@ -360,7 +404,12 @@ class Emerald {
     const rect =
       typeof canvas.getBoundingClientRect === "function"
         ? canvas.getBoundingClientRect()
-        : { left: 0, top: 0, width: canvas.clientWidth, height: canvas.clientHeight };
+        : {
+            left: 0,
+            top: 0,
+            width: canvas.clientWidth,
+            height: canvas.clientHeight,
+          };
 
     const sx = (clientX - rect.left) * (canvas.width / (rect.width || 1));
     const sy = (clientY - rect.top) * (canvas.height / (rect.height || 1));
@@ -558,7 +607,6 @@ class Emerald {
       console.error("[Emerald.js] > color is not an instance of Color class.");
     }
   }
-
 
   /**
    * @method run
@@ -872,7 +920,15 @@ class Emerald {
     const cssW = worldW;
     const cssH = worldH;
     const projectionMatrix = this._projection;
-    mat4.ortho(projectionMatrix, -cssW / 2, cssW / 2, -cssH / 2, cssH / 2, -100, 100);
+    mat4.ortho(
+      projectionMatrix,
+      -cssW / 2,
+      cssW / 2,
+      -cssH / 2,
+      cssH / 2,
+      -100,
+      100
+    );
     GLManager.setProjection(projectionMatrix);
 
     const view = this._view;
@@ -891,11 +947,7 @@ class Emerald {
       camTX = Math.round(camTX * zx) / zx;
       camTY = Math.round(camTY * zy) / zy;
     }
-    mat4.translate(view, view, [
-      camTX,
-      camTY,
-      camera.transform.position.z,
-    ]);
+    mat4.translate(view, view, [camTX, camTY, camera.transform.position.z]);
 
     this._ambient[0] = this.ambientLight.x;
     this._ambient[1] = this.ambientLight.y;
@@ -1084,8 +1136,7 @@ class Emerald {
 
     const pos = object.transform.position;
     const scale = object.transform.scale;
-    const half =
-      Math.max(Math.abs(scale.x), Math.abs(scale.y)) * 1.5;
+    const half = Math.max(Math.abs(scale.x), Math.abs(scale.y)) * 1.5;
 
     return !(
       pos.x + half < left ||

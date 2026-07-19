@@ -51,7 +51,8 @@ class NetworkManager {
         "[NetworkManager] colyseus.js is not installed. Run `npm install colyseus.js` to use networking."
       );
     }
-    const Client = colyseus.Client || (colyseus.default && colyseus.default.Client);
+    const Client =
+      colyseus.Client || (colyseus.default && colyseus.default.Client);
     this.client = new Client(endpoint);
     return this;
   }

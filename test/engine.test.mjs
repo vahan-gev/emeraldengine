@@ -142,7 +142,13 @@ test("Transform hierarchy composes world position with parent scale/rotation", (
 });
 
 test("Easing endpoints map 0->0 and 1->1", () => {
-  for (const name of ["linear", "inOutQuad", "outCubic", "outBounce", "outElastic"]) {
+  for (const name of [
+    "linear",
+    "inOutQuad",
+    "outCubic",
+    "outBounce",
+    "outElastic",
+  ]) {
     assert.ok(Math.abs(Easing[name](0) - 0) < 1e-6, `${name}(0)`);
     assert.ok(Math.abs(Easing[name](1) - 1) < 1e-6, `${name}(1)`);
   }
@@ -180,7 +186,10 @@ test("Timer.after fires once, Timer.every fires N times", () => {
 test("StateMachine runs enter/exit/update and transitions", () => {
   const log = [];
   const fsm = new StateMachine();
-  fsm.add("a", { enter: () => log.push("enterA"), exit: () => log.push("exitA") });
+  fsm.add("a", {
+    enter: () => log.push("enterA"),
+    exit: () => log.push("exitA"),
+  });
   fsm.add("b", { enter: () => log.push("enterB") });
   fsm.set("a");
   fsm.set("b");
@@ -199,11 +208,17 @@ test("SpatialGrid.queryRadius returns nearby items only", () => {
 });
 
 test("Serializer round-trips a scene through JSON", () => {
-  Serializer.register("dot", () =>
-    new GameObject("dot", new Vector3(0, 0, 0), 0, new Vector2(1, 1))
+  Serializer.register(
+    "dot",
+    () => new GameObject("dot", new Vector3(0, 0, 0), 0, new Vector2(1, 1))
   );
   const scene = new Scene();
-  const obj = new GameObject("dot", new Vector3(7, -3, 2), 0.5, new Vector2(4, 4));
+  const obj = new GameObject(
+    "dot",
+    new Vector3(7, -3, 2),
+    0.5,
+    new Vector2(4, 4)
+  );
   obj.prefabType = "dot";
   obj.layer = 3;
   scene.add(obj);
@@ -233,7 +248,12 @@ test("Physics uses a fixed-timestep accumulator", () => {
 
 test("syncPhysics copies live position AND rotation onto the transform", () => {
   const physics = new Physics(-9.8, 30);
-  const go = new GameObject("body", new Vector3(0, 100, 0), 0, new Vector2(10, 10));
+  const go = new GameObject(
+    "body",
+    new Vector3(0, 100, 0),
+    0,
+    new Vector2(10, 10)
+  );
   const rb = new RigidBody(
     physics,
     "dynamic",
@@ -250,9 +270,15 @@ test("syncPhysics copies live position AND rotation onto the transform", () => {
   go.syncPhysics();
 
   assert.ok(go.transform.position.y < startY, "y falls under gravity");
-  assert.ok(Math.abs(go.transform.rotation) > 0, "rotation is synced from the body");
+  assert.ok(
+    Math.abs(go.transform.rotation) > 0,
+    "rotation is synced from the body"
+  );
   const p = rb.getPosition();
-  assert.ok(Math.abs(p.y - go.transform.position.y) < 1e-9, "getPosition is live");
+  assert.ok(
+    Math.abs(p.y - go.transform.position.y) < 1e-9,
+    "getPosition is live"
+  );
 });
 
 test("RigidBody.getInitialPosition keeps the spawn position while getPosition tracks the body", () => {
@@ -281,10 +307,22 @@ test("Collider debug shapes are created lazily and syncDebugShape never forces c
     null,
     new Vector2(0, 0)
   );
-  const collider = new BoxCollider(rb, new Vector2(1, 1), 1, 0.3, 0, false, null);
+  const collider = new BoxCollider(
+    rb,
+    new Vector2(1, 1),
+    1,
+    0.3,
+    0,
+    false,
+    null
+  );
   assert.equal(collider._debugShape, null, "no debug shape until requested");
   collider.syncDebugShape({ position: { x: 1, y: 2 }, rotation: 0.5 });
-  assert.equal(collider._debugShape, null, "syncDebugShape does not allocate the shape");
+  assert.equal(
+    collider._debugShape,
+    null,
+    "syncDebugShape does not allocate the shape"
+  );
 });
 
 test("Coroutine sequences time and frame waits", () => {
@@ -379,7 +417,23 @@ test("SpriteBatch._writeQuad writes a centered, rotated quad", () => {
   assert.equal(out[4], 1);
   // Rotated 90deg: the top-left corner swings to the bottom-left.
   const out2 = new Float32Array(4 * 8);
-  SpriteBatch._writeQuad(out2, 0, 0, 0, 1, 1, Math.PI / 2, 0, 0, 1, 1, 1, 1, 1, 1);
+  SpriteBatch._writeQuad(
+    out2,
+    0,
+    0,
+    0,
+    1,
+    1,
+    Math.PI / 2,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  );
   assert.ok(Math.abs(out2[0] - -1) < 1e-6);
   assert.ok(Math.abs(out2[1] - -1) < 1e-6);
 });

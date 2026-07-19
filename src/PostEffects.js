@@ -23,7 +23,10 @@ class BloomEffect extends PostEffect {
         float l = dot(c.rgb, vec3(0.2126, 0.7152, 0.0722));
         gl_FragColor = l > uThreshold ? c : vec4(0.0, 0.0, 0.0, 1.0);
       }`,
-      { setUniforms: (gl, loc) => gl.uniform1f(loc("uThreshold"), this.threshold) }
+      {
+        setUniforms: (gl, loc) =>
+          gl.uniform1f(loc("uThreshold"), this.threshold),
+      }
     );
 
     const blur = (horizontal) => `

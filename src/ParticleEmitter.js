@@ -49,7 +49,18 @@ class ParticleEmitter {
     const texture = options.texture ?? options.texturePath ?? null;
     const makeSprite =
       options.spriteFactory ||
-      ((tex) => new Texture(tex, 0, 0, 1, 1, 0, false, options.pixelart ?? false, false));
+      ((tex) =>
+        new Texture(
+          tex,
+          0,
+          0,
+          1,
+          1,
+          0,
+          false,
+          options.pixelart ?? false,
+          false
+        ));
 
     this.parts = [];
     this.free = [];
@@ -75,10 +86,23 @@ class ParticleEmitter {
         drawable,
         color: new Color(255, 255, 255, 255),
         alive: false,
-        x: 0, y: 0, vx: 0, vy: 0, gx: 0, gy: 0, drag: 0,
-        age: 0, life: 1, base: 4,
-        sFrom: 1, sTo: 1, aFrom: 1, aTo: 0,
-        rot: 0, rotSpeed: 0, additive: false,
+        x: 0,
+        y: 0,
+        vx: 0,
+        vy: 0,
+        gx: 0,
+        gy: 0,
+        drag: 0,
+        age: 0,
+        life: 1,
+        base: 4,
+        sFrom: 1,
+        sTo: 1,
+        aFrom: 1,
+        aTo: 0,
+        rot: 0,
+        rotSpeed: 0,
+        additive: false,
       };
       this.parts.push(p);
       this.free.push(p);
@@ -169,7 +193,8 @@ class ParticleEmitter {
     p.color.b = cfg.cb ?? 255;
     p.color.a = 255;
     if (p.drawable) {
-      if (typeof p.drawable.setColor === "function") p.drawable.setColor(p.color);
+      if (typeof p.drawable.setColor === "function")
+        p.drawable.setColor(p.color);
       if (typeof p.drawable.setBlendMode === "function") {
         p.drawable.setBlendMode(cfg.additive ? "additive" : "normal");
       }

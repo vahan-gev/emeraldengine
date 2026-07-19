@@ -33,12 +33,7 @@ class TextureAtlas {
     await TextureManager.getTexture(texturePath, pixelart);
     const w = image.width;
     const h = image.height;
-    return new TextureAtlas(
-      texturePath,
-      TextureAtlas._parse(atlasJson),
-      w,
-      h
-    );
+    return new TextureAtlas(texturePath, TextureAtlas._parse(atlasJson), w, h);
   }
 
   /** @private */

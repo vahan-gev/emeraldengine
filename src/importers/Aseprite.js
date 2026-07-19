@@ -41,14 +41,18 @@ class Aseprite {
    */
   static spriteConfig(sheet) {
     const frames = Aseprite.frames(sheet);
-    const first = frames[0] && frames[0].frame ? frames[0].frame : { w: 0, h: 0 };
+    const first =
+      frames[0] && frames[0].frame ? frames[0].frame : { w: 0, h: 0 };
     const frameWidth = first.w || 0;
     const frameHeight = first.h || 0;
-    const sheetW = (sheet.meta && sheet.meta.size && sheet.meta.size.w) || frameWidth;
+    const sheetW =
+      (sheet.meta && sheet.meta.size && sheet.meta.size.w) || frameWidth;
     return {
       frameWidth,
       frameHeight,
-      framesPerRow: frameWidth ? Math.max(1, Math.round(sheetW / frameWidth)) : 1,
+      framesPerRow: frameWidth
+        ? Math.max(1, Math.round(sheetW / frameWidth))
+        : 1,
       totalFrames: frames.length,
     };
   }
@@ -127,7 +131,7 @@ class Aseprite {
     for (const clip of Aseprite.toClips(sheet)) {
       const loop =
         typeof loopOpt === "object" && loopOpt !== null
-          ? loopOpt[clip.name] ?? true
+          ? (loopOpt[clip.name] ?? true)
           : !!loopOpt;
       animator.addClip(clip.name, clip.frames, { speed: clip.speed, loop });
     }

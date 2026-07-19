@@ -152,7 +152,8 @@ class AudioManager {
       volume = 0;
     } else {
       volume =
-        1 - (distance - this.refDistance) / (this.maxDistance - this.refDistance);
+        1 -
+        (distance - this.refDistance) / (this.maxDistance - this.refDistance);
     }
 
     const pan = Math.max(-1, Math.min(1, dx / this.maxDistance));
@@ -191,12 +192,13 @@ class AudioManager {
         source.connect(panner);
         panner.connect(gain);
         gain.connect(ctx.destination);
-        node.play().catch((error) =>
-          console.warn(`Spatial audio play interrupted for ${name}:`, error)
-        );
+        node
+          .play()
+          .catch((error) =>
+            console.warn(`Spatial audio play interrupted for ${name}:`, error)
+          );
         return true;
-      } catch (err) {
-      }
+      } catch (err) {}
     }
 
     node.volume = finalVolume;

@@ -10,16 +10,7 @@ class Square2D extends Drawable {
   constructor() {
     const vertices = [1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, -1.0];
     const verticesBuffer = initVertexBuffer(GLManager.getGL(), vertices);
-    const textureCoordinates = [
-      1.0,
-      1.0,
-      0.0,
-      1.0,
-      1.0,
-      0.0,
-      0.0,
-      0.0,
-    ];
+    const textureCoordinates = [1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0];
     const texCoordBuffer = initVertexBuffer(
       GLManager.getGL(),
       textureCoordinates

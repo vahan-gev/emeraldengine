@@ -123,7 +123,9 @@ class TextureManager {
    * @returns {Promise<void>}
    */
   static async preload(paths, pixelart = false) {
-    await Promise.all(paths.map((path) => TextureManager.getTexture(path, pixelart)));
+    await Promise.all(
+      paths.map((path) => TextureManager.getTexture(path, pixelart))
+    );
   }
 
   /**
@@ -134,7 +136,9 @@ class TextureManager {
    * @returns {boolean}
    */
   static has(path, pixelart = false) {
-    return TextureManager.textures.has(`${path}|${pixelart ? "nearest" : "linear"}`);
+    return TextureManager.textures.has(
+      `${path}|${pixelart ? "nearest" : "linear"}`
+    );
   }
 
   /**
@@ -182,7 +186,9 @@ class TextureManager {
    * @returns {number}
    */
   static refCount(path, pixelart = false) {
-    return TextureManager.refs.get(`${path}|${pixelart ? "nearest" : "linear"}`) || 0;
+    return (
+      TextureManager.refs.get(`${path}|${pixelart ? "nearest" : "linear"}`) || 0
+    );
   }
 
   /**
@@ -194,7 +200,9 @@ class TextureManager {
     const gl = GLManager.getGL();
     if (gl) {
       TextureManager.textures.forEach((promise) => {
-        promise.then(({ texture }) => gl.deleteTexture(texture)).catch(() => {});
+        promise
+          .then(({ texture }) => gl.deleteTexture(texture))
+          .catch(() => {});
       });
     }
     TextureManager.textures.clear();

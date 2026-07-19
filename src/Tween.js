@@ -67,7 +67,8 @@ class Tween {
     const e = this.easing(t);
 
     for (const key in this.props) {
-      this.target[key] = this.from[key] + (this.props[key] - this.from[key]) * e;
+      this.target[key] =
+        this.from[key] + (this.props[key] - this.from[key]) * e;
     }
     if (this.onUpdate) this.onUpdate(this.target, t);
 

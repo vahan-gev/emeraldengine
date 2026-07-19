@@ -71,7 +71,11 @@ class Material {
     /** @private */
     this._fragmentSource = MATERIAL_FRAGMENT_HEADER + fragmentSource;
 
-    this.program = initShaderProgram(gl, this._vertexSource, this._fragmentSource);
+    this.program = initShaderProgram(
+      gl,
+      this._vertexSource,
+      this._fragmentSource
+    );
 
     this.programInfo = {
       program: this.program,
@@ -80,8 +84,14 @@ class Material {
         aTexCoord: gl.getAttribLocation(this.program, "aTextureCoord"),
       },
       uniformLocations: {
-        projectionMatrix: gl.getUniformLocation(this.program, "uProjectionMatrix"),
-        globalViewMatrix: gl.getUniformLocation(this.program, "uModelViewMatrix"),
+        projectionMatrix: gl.getUniformLocation(
+          this.program,
+          "uProjectionMatrix"
+        ),
+        globalViewMatrix: gl.getUniformLocation(
+          this.program,
+          "uModelViewMatrix"
+        ),
         useInstances: gl.getUniformLocation(this.program, "useInstances"),
         uSampler: gl.getUniformLocation(this.program, "uSampler"),
         color: gl.getUniformLocation(this.program, "uColor"),
@@ -106,15 +116,25 @@ class Material {
   _restoreGL() {
     const gl = this.gl;
     if (!gl) return;
-    this.program = initShaderProgram(gl, this._vertexSource, this._fragmentSource);
+    this.program = initShaderProgram(
+      gl,
+      this._vertexSource,
+      this._fragmentSource
+    );
     this._locCache.clear();
     this.programInfo.program = this.program;
     const a = this.programInfo.attribLocations;
     a.vertexPosition = gl.getAttribLocation(this.program, "aVertexPosition");
     a.aTexCoord = gl.getAttribLocation(this.program, "aTextureCoord");
     const u = this.programInfo.uniformLocations;
-    u.projectionMatrix = gl.getUniformLocation(this.program, "uProjectionMatrix");
-    u.globalViewMatrix = gl.getUniformLocation(this.program, "uModelViewMatrix");
+    u.projectionMatrix = gl.getUniformLocation(
+      this.program,
+      "uProjectionMatrix"
+    );
+    u.globalViewMatrix = gl.getUniformLocation(
+      this.program,
+      "uModelViewMatrix"
+    );
     u.useInstances = gl.getUniformLocation(this.program, "useInstances");
     u.uSampler = gl.getUniformLocation(this.program, "uSampler");
     u.color = gl.getUniformLocation(this.program, "uColor");

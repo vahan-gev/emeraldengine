@@ -36,7 +36,11 @@ class ScreenEffects {
     /** @private */
     this._fade = this._makeQuad(layer, half, new Color(0, 0, 0, 255));
     /** @private */
-    this._flashQuad = this._makeQuad(layer + 1, half, new Color(255, 255, 255, 255));
+    this._flashQuad = this._makeQuad(
+      layer + 1,
+      half,
+      new Color(255, 255, 255, 255)
+    );
 
     /** @private */
     this._barTop = this._makeQuad(layer + 2, half, new Color(0, 0, 0, 255));
@@ -94,7 +98,11 @@ class ScreenEffects {
    * @param {Function} [easing] - Easing function (default linear)
    * @returns {Promise<void>} - Resolves when the fade completes
    */
-  fadeOut(duration = 0.4, color = new Color(0, 0, 0, 255), easing = Easing.linear) {
+  fadeOut(
+    duration = 0.4,
+    color = new Color(0, 0, 0, 255),
+    easing = Easing.linear
+  ) {
     this._setColor(this._fade, color);
     return this._startFade(this._fade.getOpacity(), 1, duration, easing);
   }
@@ -135,7 +143,11 @@ class ScreenEffects {
     this._setColor(this._flashQuad, color);
     return new Promise((resolve) => {
       if (this._flashAnim && this._flashAnim.resolve) this._flashAnim.resolve();
-      this._flashAnim = { elapsed: 0, duration: Math.max(0.0001, duration), resolve };
+      this._flashAnim = {
+        elapsed: 0,
+        duration: Math.max(0.0001, duration),
+        resolve,
+      };
     });
   }
 
@@ -220,7 +232,8 @@ class ScreenEffects {
     this._barTop.setOpacity(visible ? 1 : 0);
     this._barBottom.setOpacity(visible ? 1 : 0);
     if (visible) {
-      const offset = this._barHalf + this._screenHalfHeight() - this._letterboxHeight;
+      const offset =
+        this._barHalf + this._screenHalfHeight() - this._letterboxHeight;
       this._barTop.transform.position.y = offset;
       this._barBottom.transform.position.y = -offset;
     }

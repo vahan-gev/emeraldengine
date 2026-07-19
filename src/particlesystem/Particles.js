@@ -56,7 +56,7 @@ export default class Particles {
       framesPerRow,
       totalFrames,
       this.settings.animation ? this.settings.animation.speed : 0,
-      this.settings.animation ? true : false,
+      this.settings.animation ? true : false
     );
     this.instancedTexture.clearInstances();
     this.gameObject.addComponent(this.instancedTexture);

@@ -76,7 +76,10 @@ class Tilemap {
   setMap(map, options = {}) {
     const { originX = 0, originY = 0, flipY = true } = options;
     const rows = map.length;
-    const cols = map.reduce((max, row) => Math.max(max, row ? row.length : 0), 0);
+    const cols = map.reduce(
+      (max, row) => Math.max(max, row ? row.length : 0),
+      0
+    );
     const count = Math.max(1, rows * cols);
 
     this._map = map;

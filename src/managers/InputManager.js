@@ -6,23 +6,51 @@
  * controllers, and anything routed through Steam Input / XInput).
  */
 const STANDARD_BUTTONS = {
-  south: 0, a: 0, cross: 0,
-  east: 1, b: 1, circle: 1,
-  west: 2, x: 2, square: 2,
-  north: 3, y: 3, triangle: 3,
-  l1: 4, lb: 4, leftShoulder: 4,
-  r1: 5, rb: 5, rightShoulder: 5,
-  l2: 6, lt: 6, leftTrigger: 6,
-  r2: 7, rt: 7, rightTrigger: 7,
-  select: 8, back: 8, view: 8, share: 8,
-  start: 9, menu: 9, options: 9,
-  l3: 10, leftStick: 10,
-  r3: 11, rightStick: 11,
-  up: 12, dpadUp: 12,
-  down: 13, dpadDown: 13,
-  left: 14, dpadLeft: 14,
-  right: 15, dpadRight: 15,
-  home: 16, guide: 16,
+  south: 0,
+  a: 0,
+  cross: 0,
+  east: 1,
+  b: 1,
+  circle: 1,
+  west: 2,
+  x: 2,
+  square: 2,
+  north: 3,
+  y: 3,
+  triangle: 3,
+  l1: 4,
+  lb: 4,
+  leftShoulder: 4,
+  r1: 5,
+  rb: 5,
+  rightShoulder: 5,
+  l2: 6,
+  lt: 6,
+  leftTrigger: 6,
+  r2: 7,
+  rt: 7,
+  rightTrigger: 7,
+  select: 8,
+  back: 8,
+  view: 8,
+  share: 8,
+  start: 9,
+  menu: 9,
+  options: 9,
+  l3: 10,
+  leftStick: 10,
+  r3: 11,
+  rightStick: 11,
+  up: 12,
+  dpadUp: 12,
+  down: 13,
+  dpadDown: 13,
+  left: 14,
+  dpadLeft: 14,
+  right: 15,
+  dpadRight: 15,
+  home: 16,
+  guide: 16,
 };
 
 const STANDARD_AXES = { leftX: 0, leftY: 1, rightX: 2, rightY: 3 };
@@ -32,15 +60,91 @@ const CUSTOM_MAPPINGS = [];
 const BUILTIN_MAPPINGS = [
   {
     match: "logitech dual action",
-    buttons: { west: 0, x: 0, square: 0, south: 1, a: 1, cross: 1, east: 2, b: 2, circle: 2, north: 3, y: 3, triangle: 3, l1: 4, lb: 4, r1: 5, rb: 5, l2: 6, lt: 6, r2: 7, rt: 7, select: 8, back: 8, start: 9, l3: 10, r3: 11 },
+    buttons: {
+      west: 0,
+      x: 0,
+      square: 0,
+      south: 1,
+      a: 1,
+      cross: 1,
+      east: 2,
+      b: 2,
+      circle: 2,
+      north: 3,
+      y: 3,
+      triangle: 3,
+      l1: 4,
+      lb: 4,
+      r1: 5,
+      rb: 5,
+      l2: 6,
+      lt: 6,
+      r2: 7,
+      rt: 7,
+      select: 8,
+      back: 8,
+      start: 9,
+      l3: 10,
+      r3: 11,
+    },
   },
   {
     match: "twin usb",
-    buttons: { north: 0, y: 0, triangle: 0, east: 1, b: 1, circle: 1, south: 2, a: 2, cross: 2, west: 3, x: 3, square: 3, l2: 4, lt: 4, r2: 5, rt: 5, l1: 6, lb: 6, r1: 7, rb: 7, select: 8, back: 8, start: 9, l3: 10, r3: 11 },
+    buttons: {
+      north: 0,
+      y: 0,
+      triangle: 0,
+      east: 1,
+      b: 1,
+      circle: 1,
+      south: 2,
+      a: 2,
+      cross: 2,
+      west: 3,
+      x: 3,
+      square: 3,
+      l2: 4,
+      lt: 4,
+      r2: 5,
+      rt: 5,
+      l1: 6,
+      lb: 6,
+      r1: 7,
+      rb: 7,
+      select: 8,
+      back: 8,
+      start: 9,
+      l3: 10,
+      r3: 11,
+    },
   },
   {
     match: "8bitdo",
-    buttons: { east: 0, b: 0, circle: 0, south: 1, a: 1, cross: 1, north: 3, y: 3, triangle: 3, west: 4, x: 4, square: 4, l1: 6, lb: 6, r1: 7, rb: 7, l2: 8, lt: 8, r2: 9, rt: 9, select: 10, back: 10, start: 11 },
+    buttons: {
+      east: 0,
+      b: 0,
+      circle: 0,
+      south: 1,
+      a: 1,
+      cross: 1,
+      north: 3,
+      y: 3,
+      triangle: 3,
+      west: 4,
+      x: 4,
+      square: 4,
+      l1: 6,
+      lb: 6,
+      r1: 7,
+      rb: 7,
+      l2: 8,
+      lt: 8,
+      r2: 9,
+      rt: 9,
+      select: 10,
+      back: 10,
+      start: 11,
+    },
   },
 ];
 
@@ -110,8 +214,9 @@ class InputManager {
       typeof match === "function"
         ? match
         : match instanceof RegExp
-        ? (id) => match.test(id)
-        : (id) => (id || "").toLowerCase().includes(String(match).toLowerCase());
+          ? (id) => match.test(id)
+          : (id) =>
+              (id || "").toLowerCase().includes(String(match).toLowerCase());
     CUSTOM_MAPPINGS.unshift({
       test,
       buttons: { ...STANDARD_BUTTONS, ...(mapping.buttons || {}) },
@@ -120,7 +225,8 @@ class InputManager {
   }
 
   constructor(options = {}) {
-    this.target = options.target || (typeof window !== "undefined" ? window : null);
+    this.target =
+      options.target || (typeof window !== "undefined" ? window : null);
     this.actions = new Map();
     this.down = new Set();
     this.prevDown = new Set();
@@ -193,8 +299,14 @@ class InputManager {
       this.target.addEventListener("touchstart", this._onTouch);
       this.target.addEventListener("touchmove", this._onTouch);
       this.target.addEventListener("touchend", this._onTouch);
-      this.target.addEventListener("gamepadconnected", this._onGamepadConnected);
-      this.target.addEventListener("gamepaddisconnected", this._onGamepadDisconnected);
+      this.target.addEventListener(
+        "gamepadconnected",
+        this._onGamepadConnected
+      );
+      this.target.addEventListener(
+        "gamepaddisconnected",
+        this._onGamepadDisconnected
+      );
     }
   }
 
@@ -212,7 +324,10 @@ class InputManager {
    * @returns {InputManager} - this
    */
   mapAction(name, tokens) {
-    this.actions.set(name, tokens.map((t) => this._normKey(t)));
+    this.actions.set(
+      name,
+      tokens.map((t) => this._normKey(t))
+    );
     return this;
   }
 
@@ -428,7 +543,8 @@ class InputManager {
    * @returns {number}
    */
   getGamepadTrigger(side = "left", padIndex = 0) {
-    return this.getGamepadButton(side === "right" ? "r2" : "l2", padIndex).value;
+    return this.getGamepadButton(side === "right" ? "r2" : "l2", padIndex)
+      .value;
   }
 
   /**
@@ -440,7 +556,9 @@ class InputManager {
    */
   rumble(padIndex = 0, opts = {}) {
     const gp = this.gamepads[padIndex];
-    const act = gp && (gp.vibrationActuator || (gp.hapticActuators && gp.hapticActuators[0]));
+    const act =
+      gp &&
+      (gp.vibrationActuator || (gp.hapticActuators && gp.hapticActuators[0]));
     if (!act) return;
     const { duration = 200, strong = 1, weak = 1 } = opts;
     if (typeof act.playEffect === "function") {
@@ -451,7 +569,8 @@ class InputManager {
         startDelay: 0,
       });
     }
-    if (typeof act.pulse === "function") return act.pulse(Math.max(strong, weak), duration);
+    if (typeof act.pulse === "function")
+      return act.pulse(Math.max(strong, weak), duration);
   }
 
   /**
@@ -530,7 +649,8 @@ class InputManager {
     const out = [];
     for (let b = 0; b < gp.buttons.length; b++) {
       const btn = gp.buttons[b];
-      if (btn && (btn.pressed || (btn.value || 0) > this.gamepadDeadzone)) out.push(b);
+      if (btn && (btn.pressed || (btn.value || 0) > this.gamepadDeadzone))
+        out.push(b);
     }
     return out;
   }
@@ -549,8 +669,14 @@ class InputManager {
     const v = axes[axes.length - 1];
     if (v == null || v > 1.2 || v < -1.2) return;
     const dirs = [
-      ["dpadUp"], ["dpadUp", "dpadRight"], ["dpadRight"], ["dpadDown", "dpadRight"],
-      ["dpadDown"], ["dpadDown", "dpadLeft"], ["dpadLeft"], ["dpadUp", "dpadLeft"],
+      ["dpadUp"],
+      ["dpadUp", "dpadRight"],
+      ["dpadRight"],
+      ["dpadDown", "dpadRight"],
+      ["dpadDown"],
+      ["dpadDown", "dpadLeft"],
+      ["dpadLeft"],
+      ["dpadUp", "dpadLeft"],
     ];
     const bucket = Math.round((v + 1) * 3.5);
     const names = dirs[Math.max(0, Math.min(7, bucket))];
@@ -585,7 +711,8 @@ class InputManager {
       }
       for (const name in map) {
         const btn = buttons[map[name]];
-        if (btn && (btn.pressed || (btn.value || 0) > dz)) set.add(`pad:${i}:${name}`);
+        if (btn && (btn.pressed || (btn.value || 0) > dz))
+          set.add(`pad:${i}:${name}`);
       }
       this._decodeHat(gp, i, set);
 
@@ -638,8 +765,14 @@ class InputManager {
     this.target.removeEventListener("touchstart", this._onTouch);
     this.target.removeEventListener("touchmove", this._onTouch);
     this.target.removeEventListener("touchend", this._onTouch);
-    this.target.removeEventListener("gamepadconnected", this._onGamepadConnected);
-    this.target.removeEventListener("gamepaddisconnected", this._onGamepadDisconnected);
+    this.target.removeEventListener(
+      "gamepadconnected",
+      this._onGamepadConnected
+    );
+    this.target.removeEventListener(
+      "gamepaddisconnected",
+      this._onGamepadDisconnected
+    );
   }
 }
 

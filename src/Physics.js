@@ -64,9 +64,7 @@ class Physics {
     this.world.on("begin-contact", (contact) =>
       fire(contact, "onCollisionEnter")
     );
-    this.world.on("end-contact", (contact) =>
-      fire(contact, "onCollisionExit")
-    );
+    this.world.on("end-contact", (contact) => fire(contact, "onCollisionExit"));
   }
 
   /**

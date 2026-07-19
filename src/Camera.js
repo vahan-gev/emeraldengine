@@ -20,11 +20,7 @@ import { Vector2, Vector3 } from "./Physics.js";
  */
 class Camera {
   constructor(options = {}) {
-    this.transform = new Transform(
-      new Vector3(0, 0, 0),
-      0,
-      new Vector2(1, 1)
-    );
+    this.transform = new Transform(new Vector3(0, 0, 0), 0, new Vector2(1, 1));
 
     const vp = options.viewport || {};
     this.viewport = {

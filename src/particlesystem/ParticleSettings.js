@@ -37,7 +37,7 @@ class ParticleSettings {
     alphaOverLife = null,
     colorOverLife = null,
     rotationSpeed = 0,
-    drag = 0
+    drag = 0,
   } = {}) {
     this.lifetime = lifetime;
     this.velocity = velocity;
@@ -64,4 +64,4 @@ class ParticleSettings {
   }
 }
 
-export default ParticleSettings; 
+export default ParticleSettings;

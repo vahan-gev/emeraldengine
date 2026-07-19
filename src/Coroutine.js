@@ -175,8 +175,7 @@ class Coroutine {
       case "tween": {
         const t = wait.spec;
         t.elapsed += dt;
-        const k =
-          t.duration <= 0 ? 1 : Math.min(1, t.elapsed / t.duration);
+        const k = t.duration <= 0 ? 1 : Math.min(1, t.elapsed / t.duration);
         const eased = t.easing(k);
         t.onUpdate(t.from + (t.to - t.from) * eased);
         if (k >= 1) Coroutine._advance(routine, undefined, 0);

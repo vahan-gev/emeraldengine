@@ -30,7 +30,11 @@ class MathUtils {
    * Remaps a value from one range to another.
    */
   static map(value, inMin, inMax, outMin, outMax) {
-    return MathUtils.lerp(outMin, outMax, MathUtils.inverseLerp(inMin, inMax, value));
+    return MathUtils.lerp(
+      outMin,
+      outMax,
+      MathUtils.inverseLerp(inMin, inMax, value)
+    );
   }
 
   /**
@@ -65,7 +69,9 @@ class MathUtils {
    * Returns a random element of an array (or undefined if empty).
    */
   static randomChoice(array) {
-    return array.length ? array[Math.floor(Math.random() * array.length)] : undefined;
+    return array.length
+      ? array[Math.floor(Math.random() * array.length)]
+      : undefined;
   }
 
   /**

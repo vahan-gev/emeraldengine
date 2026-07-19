@@ -72,7 +72,8 @@ class Particle {
     const tr = this.instance.transform;
 
     if (s.scaleOverLife) {
-      const m = s.scaleOverLife.from + (s.scaleOverLife.to - s.scaleOverLife.from) * t;
+      const m =
+        s.scaleOverLife.from + (s.scaleOverLife.to - s.scaleOverLife.from) * t;
       tr.scale.x = this._baseScaleX * m;
       tr.scale.y = this._baseScaleY * m;
     }
@@ -88,7 +89,9 @@ class Particle {
         b = this._colFrom[2] + (this._colTo[2] - this._colFrom[2]) * t;
       }
       if (s.alphaOverLife) {
-        a = s.alphaOverLife.from + (s.alphaOverLife.to - s.alphaOverLife.from) * t;
+        a =
+          s.alphaOverLife.from +
+          (s.alphaOverLife.to - s.alphaOverLife.from) * t;
       }
       this.instance.setColor(r, g, b, a);
     }
@@ -136,7 +139,7 @@ class Particle {
   destroy() {
     if (this.instancedTexture && this.instance) {
       if (this.instancedTexture.instances.length > 0) {
-        if(this.instancedTexture.getInstanceWithId(this.instance.id)) {
+        if (this.instancedTexture.getInstanceWithId(this.instance.id)) {
           this.instancedTexture.removeInstance(this.instance.id);
         }
       }

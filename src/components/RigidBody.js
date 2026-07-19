@@ -37,6 +37,8 @@ class RigidBody {
     this.collider = null;
     this.id = IDManager.generateUniqueID();
     this.name = "RigidBody" + this.id;
+
+    this.body.setUserData(this);
   }
 
   /**
@@ -51,6 +53,42 @@ class RigidBody {
         (position.y + this.offset.y) / this.physics.scale
       )
     );
+  }
+
+  /**
+   * @method getWorldX
+   * @description The single source of truth for body(physics) -> world(pixel)
+   * conversion on X: undo the scale and the spawn offset.
+   * @returns {number} - The live world-space x of the body
+   * @private
+   */
+  getWorldX() {
+    return this.body.getPosition().x * this.physics.scale - this.offset.x;
+  }
+
+  /**
+   * @method getWorldY
+   * @description World-space y counterpart of getWorldX.
+   * @returns {number} - The live world-space y of the body
+   * @private
+   */
+  getWorldY() {
+    return this.body.getPosition().y * this.physics.scale - this.offset.y;
+  }
+
+  /**
+   * @method syncTransform
+   * @description Writes the body's live world position and angle into a
+   * Transform. This is the one place body state is copied onto a renderable, so
+   * position and rotation stay in lock-step. Static/kinematic bodies are not
+   * driven by the simulation, so only dynamic bodies write back.
+   * @param {Transform} transform - The transform to update in place
+   */
+  syncTransform(transform) {
+    if (this.type !== "dynamic") return;
+    transform.position.x = this.getWorldX();
+    transform.position.y = this.getWorldY();
+    transform.rotation = this.body.getAngle();
   }
 
   /**
@@ -83,11 +121,94 @@ class RigidBody {
   }
 
   /**
+   * @method setLinearVelocity
+   * @description Sets the body's linear velocity in world (pixel) units per
+   * second. Converts to physics units internally.
+   * @param {number} vx - Horizontal velocity (world units/sec)
+   * @param {number} vy - Vertical velocity (world units/sec)
+   */
+  setLinearVelocity(vx, vy) {
+    this.body.setLinearVelocity(
+      new planck.Vec2(vx / this.physics.scale, vy / this.physics.scale)
+    );
+  }
+
+  /**
+   * @method getLinearVelocity
+   * @description Returns the body's linear velocity in world (pixel) units/sec.
+   * @returns {{x:number, y:number}}
+   */
+  getLinearVelocity() {
+    const v = this.body.getLinearVelocity();
+    return { x: v.x * this.physics.scale, y: v.y * this.physics.scale };
+  }
+
+  /**
+   * @method applyImpulse
+   * @description Applies a linear impulse (world units) at the body's center.
+   * @param {number} ix
+   * @param {number} iy
+   */
+  applyImpulse(ix, iy) {
+    this.body.applyLinearImpulse(
+      new planck.Vec2(ix / this.physics.scale, iy / this.physics.scale),
+      this.body.getWorldCenter(),
+      true
+    );
+  }
+
+  /**
+   * @method setAwake
+   * @description Wakes or sleeps the body.
+   * @param {boolean} awake
+   */
+  setAwake(awake) {
+    this.body.setAwake(awake);
+  }
+
+  /**
+   * @method setContinuous
+   * @description Enables continuous collision detection (CCD) for this body by
+   * marking it a "bullet". Fast-moving bodies (e.g. a dash, a projectile, a
+   * player falling at high speed) otherwise sweep so far in a single fixed step
+   * that they tunnel straight through thin static geometry; with CCD on, planck
+   * solves the swept path against static bodies so the body stops at the wall
+   * instead of teleporting past it. Costs more per step, so reserve it for the
+   * handful of bodies that actually move fast.
+   * @param {boolean} [enabled=true]
+   * @returns {RigidBody} - this
+   */
+  setContinuous(enabled = true) {
+    this.body.setBullet(!!enabled);
+    return this;
+  }
+
+  /**
+   * @method isContinuous
+   * @description Whether CCD (bullet mode) is enabled for this body.
+   * @returns {boolean}
+   */
+  isContinuous() {
+    return this.body.isBullet();
+  }
+
+  /**
    * @method getPosition
-   * @description Returns the position of the rigidbody
-   * @returns {Vector2} - The position of the rigidbody
+   * @description Returns the live world-space position of the body (kept in sync
+   * with the simulation), not the spawn position. Use getInitialPosition() for
+   * the position the body was created at.
+   * @returns {Vector2} - The current world-space position of the rigidbody
    */
   getPosition() {
+    return new Vector2(this.getWorldX(), this.getWorldY());
+  }
+
+  /**
+   * @method getInitialPosition
+   * @description Returns the world-space position the body was created at.
+   * @returns {Vector2} - The spawn position of the rigidbody
+   */
+  getInitialPosition() {
     return this.position;
   }
 

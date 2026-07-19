@@ -9,3 +9,5 @@ coverage/
 *.log
 *.cache
 *.tmp
+examples/**/dist/
+.claude

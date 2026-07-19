@@ -109,7 +109,6 @@ export class ShaderManager {
     return {
       vertexPosition: this.gl.getAttribLocation(program, "aVertexPosition"),
       textureCoord: this.gl.getAttribLocation(program, "aTextureCoord"),
-      // Add other attributes as needed
     };
   }
 
@@ -127,7 +126,6 @@ export class ShaderManager {
       ),
       modelViewMatrix: this.gl.getUniformLocation(program, "uModelViewMatrix"),
       sampler: this.gl.getUniformLocation(program, "uSampler"),
-      // Add other uniforms as needed
     };
   }
 }

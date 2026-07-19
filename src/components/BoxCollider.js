@@ -22,7 +22,8 @@ class BoxCollider extends Collider {
     friction,
     restitution,
     isSensor = false,
-    parentObject = null
+    parentObject = null,
+    filter = null
   ) {
     super(rigidbody, isSensor, parentObject);
     this.collider = rigidbody
@@ -36,7 +37,21 @@ class BoxCollider extends Collider {
     this.fixtureSize = fixtureSize;
     this.rigidbody.setCollider(this);
     this.name = "BoxCollider" + this.id;
-    this.debugShape = new BoxColliderDebug(this.rigidbody);
+    this._applyFilterSpec(filter);
+  }
+
+  /**
+   * @method debugShape
+   * @description Lazily builds the debug visualization on first access, so a
+   * collider stays free of any GameObject/GL allocation until it is debugged.
+   * @returns {BoxColliderDebug} - The debug shape
+   */
+  get debugShape() {
+    if (!this._debugShape) {
+      /** @private */
+      this._debugShape = new BoxColliderDebug(this.rigidbody);
+    }
+    return this._debugShape;
   }
 
   /**
@@ -55,7 +70,11 @@ class BoxCollider extends Collider {
    * @description Hides the debug shape of the collider
    */
   hideDebugShape() {
-    SceneManager.getScene().remove(this.debugShape.gameObject);
+    if (!this._debugShape) return;
+    var scene = SceneManager.getScene();
+    if (scene) {
+      scene.remove(this._debugShape.gameObject);
+    }
   }
 
   /**

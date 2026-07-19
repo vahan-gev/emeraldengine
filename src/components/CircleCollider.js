@@ -22,7 +22,8 @@ class CircleCollider extends Collider {
     friction,
     restitution,
     isSensor = false,
-    parentObject = null
+    parentObject = null,
+    filter = null
   ) {
     super(rigidbody, isSensor, parentObject);
     this.collider = rigidbody
@@ -36,7 +37,21 @@ class CircleCollider extends Collider {
     this.radius = radius;
     this.rigidbody.setCollider(this);
     this.name = "CircleCollider" + this.id;
-    this.debugShape = new CircleColliderDebug(this.rigidbody);
+    this._applyFilterSpec(filter);
+  }
+
+  /**
+   * @method debugShape
+   * @description Lazily builds the debug visualization on first access, so a
+   * collider stays free of any GameObject/GL allocation until it is debugged.
+   * @returns {CircleColliderDebug} - The debug shape
+   */
+  get debugShape() {
+    if (!this._debugShape) {
+      /** @private */
+      this._debugShape = new CircleColliderDebug(this.rigidbody);
+    }
+    return this._debugShape;
   }
 
   /**
@@ -55,9 +70,10 @@ class CircleCollider extends Collider {
    * @description Hides the debug shape of the collider
    */
   hideDebugShape() {
+    if (!this._debugShape) return;
     var scene = SceneManager.getScene();
     if (scene) {
-      scene.remove(this.debugShape.gameObject);
+      scene.remove(this._debugShape.gameObject);
     }
   }
 

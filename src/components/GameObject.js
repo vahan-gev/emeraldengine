@@ -4,6 +4,7 @@ import Transform from "../Transform.js";
 import RigidBody from "./RigidBody.js";
 import Collider from "./Collider.js";
 import Drawable from "../Drawable.js";
+import Behaviour from "./Behaviour.js";
 
 /**
  * @class GameObject
@@ -24,7 +25,35 @@ class GameObject {
     this.id = IDManager.generateUniqueID();
     this.isActive = false;
     this.transform = new Transform(position, rotation, scale);
-    this.opacity = 1.0; // 0..1 opacity multiplier for this GameObject
+    this.opacity = 1.0;
+
+    this.layer = 0;
+    this.screenSpace = false;
+  }
+
+  /**
+   * @method setLayer
+   * @description Sets the render layer. Objects are drawn by layer first, then
+   * by z within a layer.
+   * @param {number} layer - The layer index
+   * @returns {GameObject} - this
+   */
+  setLayer(layer) {
+    this.layer = layer;
+    return this;
+  }
+
+  /**
+   * @method setScreenSpace
+   * @description When true, the object ignores the camera (fixed on screen) —
+   * useful for HUD/UI. Position is then in pixels from the viewport center.
+   * Note: not supported for InstancedTexture-based objects.
+   * @param {boolean} value
+   * @returns {GameObject} - this
+   */
+  setScreenSpace(value) {
+    this.screenSpace = value;
+    return this;
   }
 
   /**
@@ -55,9 +84,55 @@ class GameObject {
     if (component instanceof RigidBody) {
       component.destroy();
     }
+    if (component instanceof Behaviour) {
+      component.onDestroy();
+    }
     this.components = this.components.filter(
       (comp) => comp.id !== component.id
     );
+  }
+
+  /**
+   * @method update
+   * @description Ticks the lifecycle of Behaviour components on this object.
+   * Only Behaviours are ticked here so component types with their own update
+   * signature (e.g. InstancedTexture) are left untouched.
+   * @param {number} deltaTime - Seconds since the previous frame (time-scaled)
+   */
+  update(deltaTime) {
+    for (const comp of this.components) {
+      if (comp instanceof Behaviour && comp.enabled) {
+        if (!comp._started) {
+          comp._started = true;
+          comp.start();
+        }
+        comp.update(deltaTime);
+      }
+    }
+  }
+
+  /**
+   * @method setParent
+   * @description Parents this object to another GameObject (or detaches with
+   * null). The object's transform then composes on top of the parent's, so
+   * moving/rotating/scaling the parent moves its children.
+   * @param {GameObject|null} parent - The parent GameObject, or null
+   * @returns {GameObject} - this
+   */
+  setParent(parent) {
+    this.transform.setParent(parent ? parent.transform : null);
+    return this;
+  }
+
+  /**
+   * @method addChild
+   * @description Parents another GameObject to this one.
+   * @param {GameObject} child - The child GameObject
+   * @returns {GameObject} - this
+   */
+  addChild(child) {
+    child.setParent(this);
+    return this;
   }
 
   /**
@@ -119,6 +194,56 @@ class GameObject {
   }
 
   /**
+   * @method syncPhysics
+   * @description Copies simulation state (position + rotation) from this
+   * object's dynamic rigidbody onto its transform, and mirrors it onto any
+   * visible collider debug shape. Called once per frame from the render loop so
+   * draw() stays read-only and physics isn't re-applied per camera. Also
+   * forwards to components that own their own physics-driven content (e.g.
+   * InstancedTexture).
+   */
+  syncPhysics() {
+    const rigidBody = this.getComponent(RigidBody);
+    if (rigidBody && rigidBody.getType() === "dynamic") {
+      rigidBody.syncTransform(this.transform);
+      const collider = rigidBody.getCollider() || this.getComponent(Collider);
+      if (collider && typeof collider.syncDebugShape === "function") {
+        collider.syncDebugShape(this.transform);
+      }
+    }
+    for (const comp of this.components) {
+      if (comp !== rigidBody && typeof comp.syncPhysics === "function") {
+        comp.syncPhysics();
+      }
+    }
+  }
+
+  /**
+   * @method destroy
+   * @description Permanently tears the object down: disposes every Drawable's
+   * GPU resources, destroys physics bodies, and runs Behaviour.onDestroy().
+   * Use it (or Scene.remove(obj, { dispose: true })) when an object will not
+   * be re-added — plain Scene.remove() keeps GPU resources alive for re-use.
+   * Safe to call twice.
+   */
+  destroy() {
+    if (this._destroyed) return;
+    /** @private */
+    this._destroyed = true;
+    this.isActive = false;
+    for (const comp of this.components) {
+      if (comp instanceof Drawable && typeof comp.dispose === "function") {
+        comp.dispose();
+      } else if (comp instanceof RigidBody) {
+        comp.destroy();
+      } else if (comp instanceof Behaviour) {
+        comp.onDestroy();
+      }
+    }
+    this.components = [];
+  }
+
+  /**
    * @method draw
    * @description Draws the game object
    * @param {Matrix4} globalViewMatrix - The global view matrix
@@ -127,32 +252,11 @@ class GameObject {
    */
   draw(globalViewMatrix, uniformLocation, currentTime) {
     const drawable = this.getComponent(Drawable);
-    const rigidBody = this.getComponent(RigidBody);
-    const collider = this.getComponent(Collider);
-    if (rigidBody && rigidBody.getType() === "dynamic") {
-      const updatedPos = rigidBody.getBody().getPosition();
-      const rigidBodyOffset = rigidBody.getOffset();
-      const physicsScale = rigidBody.getPhysics().getScale();
-
-      this.transform.position.x =
-        updatedPos.x * physicsScale - rigidBodyOffset.x;
-      this.transform.position.y =
-        updatedPos.y * physicsScale - rigidBodyOffset.y;
-
-      if (collider) {
-        collider.debugShape.gameObject.transform.position.x =
-        this.transform.position.x;
-        collider.debugShape.gameObject.transform.position.y =
-          this.transform.position.y;
-      }
-    }
     if (drawable) {
-      drawable.draw(
-        globalViewMatrix,
-        uniformLocation,
-        currentTime,
-        this.transform
-      );
+      const worldTransform = this.transform.parent
+        ? this.transform.getWorldTransform()
+        : this.transform;
+      drawable.draw(globalViewMatrix, uniformLocation, currentTime, worldTransform);
     }
   }
 }

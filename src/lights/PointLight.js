@@ -7,10 +7,10 @@
  */
 class PointLight {
   constructor(position, color, intensity, radius) {
-    this.position = position; // Vector2
-    this.color = color; // Color
-    this.intensity = intensity; // Number
-    this.radius = radius; // Number
+    this.position = position;
+    this.color = color;
+    this.intensity = intensity;
+    this.radius = radius;
   }
 }
 

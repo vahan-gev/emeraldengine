@@ -29,7 +29,6 @@ class EventManager {
     this.boundHandleMouseDown = this.handleMouseDown.bind(this);
     this.boundHandleMouseUp = this.handleMouseUp.bind(this);
 
-    // Camera dragging state
     this.isDragging = false;
     this.dragStartX = 0;
     this.dragStartY = 0;
@@ -37,12 +36,12 @@ class EventManager {
     this.initialCameraY = this.camera.transform.position.y;
     this.cameraWasMoved = false;
 
+    this.canvas.addEventListener("click", this.boundHandleClick);
+    this.canvas.addEventListener("mousedown", this.boundHandleMouseDown);
     window.addEventListener("mousemove", this.boundHandleMouseMove);
+    window.addEventListener("mouseup", this.boundHandleMouseUp);
     window.addEventListener("keydown", this.boundHandleKeyDown);
     window.addEventListener("keyup", this.boundHandleKeyUp);
-    window.addEventListener("click", this.boundHandleClick);
-    window.addEventListener("mousedown", this.boundHandleMouseDown);
-    window.addEventListener("mouseup", this.boundHandleMouseUp);
   }
   
   /**
@@ -171,52 +170,101 @@ class EventManager {
   }
 
   /**
+   * @method screenToWorld
+   * @description Converts screen (client) coordinates to world coordinates,
+   * accounting for camera position, zoom, and CSS/backing pixel ratio.
+   * @param {number} clientX - The clientX of the pointer
+   * @param {number} clientY - The clientY of the pointer
+   * @returns {{x: number, y: number}} - The world-space coordinates
+   */
+  screenToWorld(clientX, clientY) {
+    const rect = this.canvas.getBoundingClientRect();
+    const scale = this.camera.transform.scale;
+    const zoom = scale && scale.x ? scale.x : 1;
+
+    const vp = this.camera.viewport || { x: 0, y: 0, width: 1, height: 1 };
+    const vpLeft = rect.left + vp.x * rect.width;
+    const vpTop = rect.top + (1 - vp.y - vp.height) * rect.height;
+    const centerX = vpLeft + (vp.width * rect.width) / 2;
+    const centerY = vpTop + (vp.height * rect.height) / 2;
+
+    const cx = clientX - centerX;
+    const cy = clientY - centerY;
+    return {
+      x: cx / zoom - this.camera.transform.position.x,
+      y: -cy / zoom - this.camera.transform.position.y,
+    };
+  }
+
+  /**
+   * @method getTopObjectAt
+   * @description Returns the topmost active object under a world-space point
+   * along with the instance hit (if the object is an InstancedTexture). Topmost
+   * means highest z, with later scene order breaking ties — matching draw order.
+   * @param {number} worldX - The world-space x coordinate
+   * @param {number} worldY - The world-space y coordinate
+   * @returns {{object: GameObject, instance: Instance|null}|null}
+   */
+  getTopObjectAt(worldX, worldY) {
+    const objects = this.scene.objects;
+    let best = null;
+    let bestInstance = null;
+    let bestZ = -Infinity;
+    let bestIndex = -1;
+
+    for (let i = 0; i < objects.length; i++) {
+      const obj = objects[i];
+      if (!obj.isActive) continue;
+
+      let instanceHit = null;
+      if (obj.getComponent) {
+        const instancedTexture = obj.getComponent(InstancedTexture);
+        if (instancedTexture) {
+          instanceHit = instancedTexture.getInstanceAtPoint(worldX, worldY);
+        }
+      }
+
+      if (!instanceHit && !this.isPointInObject(worldX, worldY, obj)) {
+        continue;
+      }
+
+      const z = obj.transform.position.z;
+      if (z > bestZ || (z === bestZ && i > bestIndex)) {
+        best = obj;
+        bestInstance = instanceHit;
+        bestZ = z;
+        bestIndex = i;
+      }
+    }
+
+    return best ? { object: best, instance: bestInstance } : null;
+  }
+
+  /**
    * @method handleClick
    * @description Handles a click event
    * @param {MouseEvent} event - The mouse event
    */
   handleClick(event) {
-    const canvas = event.target;
-    const rect = canvas.getBoundingClientRect();
+    const { x: worldX, y: worldY } = this.screenToWorld(
+      event.clientX,
+      event.clientY
+    );
 
-    // Calculate click position relative to the canvas
-    const canvasX = event.clientX - rect.left;
-    const canvasY = event.clientY - rect.top;
+    const hit = this.getTopObjectAt(worldX, worldY);
+    if (!hit) return;
 
-    // Convert to world coordinates
-    const worldX =
-      canvasX - this.canvas.width / 2 - this.camera.transform.position.x;
-    const worldY =
-      this.canvas.height / 2 - canvasY - this.camera.transform.position.y;
+    if (hit.instance) {
+      hit.object
+        .getComponent(InstancedTexture)
+        .handleInstanceClick(event, worldX, worldY);
+      return;
+    }
 
-    this.scene.objects.forEach((sceneObject) => {
-      if (!sceneObject.isActive) return; // Skip inactive objects
-      // Check if the object has an InstancedTexture component
-      let instanceHandled = false;
-      if (
-        sceneObject.getComponent &&
-        sceneObject.getComponent(InstancedTexture)
-      ) {
-        const instancedTexture = sceneObject.getComponent(InstancedTexture);
-        instanceHandled = instancedTexture.handleInstanceClick(
-          event,
-          worldX,
-          worldY
-        );
-      }
-
-      // If no instance handled the click, check the object itself
-      if (
-        !instanceHandled &&
-        this.isPointInObject(worldX, worldY, sceneObject)
-      ) {
-        const listeners = this.clickListeners.get(sceneObject.id);
-        if (listeners) {
-          listeners.forEach((func) => func(event, sceneObject));
-        }
-      }
-      
-    });
+    const listeners = this.clickListeners.get(hit.object.id);
+    if (listeners) {
+      listeners.forEach((func) => func(event, hit.object));
+    }
   }
 
   /**
@@ -316,51 +364,17 @@ class EventManager {
    * @param {MouseEvent} event - The mouse event
    */
   handleMouseMove(event) {
-    const rect = this.canvas.getBoundingClientRect();
-
-    // Calculate mouse position relative to the canvas
-    const canvasX = event.clientX - rect.left;
-    const canvasY = event.clientY - rect.top;
-
-    // Convert to world coordinates
-    const worldX =
-      canvasX - this.canvas.width / 2 - this.camera.transform.position.x;
-    const worldY =
-      this.canvas.height / 2 - canvasY - this.camera.transform.position.y;
+    const { x: worldX, y: worldY } = this.screenToWorld(
+      event.clientX,
+      event.clientY
+    );
     this.mousePosition.x = worldX;
     this.mousePosition.y = worldY;
-    let hoveredObject = null;
-    let hoveredInstance = null;
 
-    this.scene.objects.forEach((sceneObject) => {
-      if (!sceneObject.isActive) return; // Skip inactive objects
+    const hit = this.getTopObjectAt(worldX, worldY);
+    const hoveredObject = hit ? hit.object : null;
+    const hoveredInstance = hit ? hit.instance : null;
 
-      // Check if the object has an InstancedTexture component
-      if (
-        sceneObject.getComponent &&
-        sceneObject.getComponent(InstancedTexture)
-      ) {
-        const instancedTexture = sceneObject.getComponent(InstancedTexture);
-        const instanceAtPoint = instancedTexture.getInstanceAtPoint(
-          worldX,
-          worldY
-        );
-        if (instanceAtPoint) {
-          hoveredInstance = instanceAtPoint;
-          hoveredObject = sceneObject; // Also set the parent object as hovered
-        }
-      }
-
-      // If no instance was hovered, check the object itself
-      if (
-        !hoveredInstance &&
-        this.isPointInObject(worldX, worldY, sceneObject)
-      ) {
-        hoveredObject = sceneObject;
-      } 
-    });
-
-    // Handle instance hover events
     if (hoveredInstance !== this.lastHoveredInstance) {
       if (this.lastHoveredInstance) {
         const parent = this.lastHoveredInstance.parent;
@@ -389,9 +403,7 @@ class EventManager {
       this.lastHoveredInstance = hoveredInstance;
     }
 
-    // Handle object hover events
     if (hoveredObject !== this.lastHoveredObject) {
-      // Always trigger leave event if we had a previously hovered object
       if (this.lastHoveredObject && this.lastHoveredObject.isActive) {
         const leaveListeners = this.hoverListeners.get(
           this.lastHoveredObject.id
@@ -403,7 +415,6 @@ class EventManager {
         }
       }
 
-      // Only trigger enter event if we're not hovering over an instance
       if (hoveredObject && hoveredObject.isActive && !hoveredInstance) {
         const enterListeners = this.hoverListeners.get(hoveredObject.id);
         if (enterListeners) {
@@ -461,12 +472,12 @@ class EventManager {
    * @description Cleans up the event manager
    */
   clean() {
+    this.canvas.removeEventListener("click", this.boundHandleClick);
+    this.canvas.removeEventListener("mousedown", this.boundHandleMouseDown);
     window.removeEventListener("mousemove", this.boundHandleMouseMove);
+    window.removeEventListener("mouseup", this.boundHandleMouseUp);
     window.removeEventListener("keydown", this.boundHandleKeyDown);
     window.removeEventListener("keyup", this.boundHandleKeyUp);
-    window.removeEventListener("click", this.boundHandleClick);
-    window.removeEventListener("mousedown", this.boundHandleMouseDown);
-    window.removeEventListener("mouseup", this.boundHandleMouseUp);
     this.pressedKeys.clear();
     this.keyDownListeners.clear();
     this.lastHoveredObject = null;

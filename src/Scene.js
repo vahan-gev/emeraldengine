@@ -27,10 +27,14 @@ class Scene {
 
   /**
    * @method remove
-   * @description Removes an object from the scene
+   * @description Removes an object from the scene. By default the object's GPU
+   * resources stay alive so it can be re-added later; pass { dispose: true }
+   * to also destroy it (free GL buffers/textures, physics bodies) when it is
+   * being removed for good.
    * @param {GameObject} object - The object to remove
+   * @param {Object} [options] - { dispose = false }
    */
-  remove(object) {
+  remove(object, options = {}) {
     if (!(object instanceof GameObject)) {
       throw new Error("Object is not a GameObject");
     }
@@ -40,6 +44,35 @@ class Scene {
       var targetId = object ? object.id : undefined;
       return objId !== targetId;
     });
+    if (options.dispose) object.destroy();
+  }
+
+  /**
+   * @method dispose
+   * @description Destroys every object in the scene (freeing their GPU
+   * resources and physics bodies) and empties it. Call when a level/screen is
+   * torn down for good — removing objects without disposing leaks GL buffers
+   * over repeated scene swaps.
+   */
+  dispose() {
+    for (const object of this.objects) {
+      if (object && typeof object.destroy === "function") object.destroy();
+    }
+    this.objects = [];
+  }
+
+  /**
+   * @method update
+   * @description Ticks every active object's component lifecycle. Call once per
+   * frame (before or after drawScene) to drive Behaviour components.
+   * @param {number} deltaTime - Seconds since the previous frame
+   */
+  update(deltaTime) {
+    for (const object of this.objects) {
+      if (object.isActive && typeof object.update === "function") {
+        object.update(deltaTime);
+      }
+    }
   }
 
   /**
@@ -63,7 +96,6 @@ class Scene {
     object.setIsActive(bool);
   }
 
-  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/iterator
   [Symbol.iterator]() {
     let index = -1;
     const data = this.objects;

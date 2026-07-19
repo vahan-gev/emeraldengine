@@ -2,9 +2,11 @@ node_modules/
 .DS_Store
 .env
 build/
+examples/**/dist/
 coverage/
 .vscode/
 .idea/
 *.log
 *.cache
 *.tmp
+.claude

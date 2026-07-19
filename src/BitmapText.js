@@ -35,7 +35,7 @@ class BitmapText {
     color,
     position,
     rotation,
-    useLighting = false // Default to false for text as it's typically UI
+    useLighting = false
   ) {
     this.text = text;
     this.texturePath = texturePath;
@@ -61,7 +61,6 @@ class BitmapText {
     for (let i = 0; i < letters.length; i++) {
       this.letterDictionary[letters[i]] = i;
     }
-    // Initialize the bitmap font texture
     this.texture = new InstancedTexture(
       this.texturePath,
       text.length,
@@ -75,13 +74,13 @@ class BitmapText {
       this.useLighting
     );
 
-    // Apply the color to the texture if provided
     if (this.color) {
       this.texture.setColor(this.color);
     }
 
-    // Apply the lighting setting to the texture
     this.texture.setUseLighting(this.useLighting);
+
+    this.texture.setStatic(true);
 
     this.gameObject.addComponent(this.texture);
     for (let i = 0; i < text.length; i++) {
@@ -163,7 +162,6 @@ class BitmapText {
    * @param {Vector3} position - The position to set
    */
   setPosition(position) {
-    // Vector3
     this.position = position;
     this.gameObject.transform.position = position;
 
@@ -184,6 +182,7 @@ class BitmapText {
         instanceIndex++;
       }
     }
+    this.texture.markDirty();
   }
 
   /**
@@ -212,6 +211,7 @@ class BitmapText {
         instanceIndex++;
       }
     }
+    this.texture.markDirty();
   }
 
   /**
@@ -239,6 +239,7 @@ class BitmapText {
         instanceIndex++;
       }
     }
+    this.texture.markDirty();
   }
 }
 

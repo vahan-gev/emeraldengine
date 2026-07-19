@@ -34,8 +34,8 @@ export default class Particles {
     this.rotation = this.settings.rotation;
     this.scale = this.settings.scale;
     this.particles = [];
-    this.duration = duration; // How long the effect lasts in seconds
-    this.offset = this.settings.offset; // Distance from center
+    this.duration = duration;
+    this.offset = this.settings.offset;
     this.elapsed = 0;
     this.active = false;
     this.instanceCount = this.settings.amount;
@@ -58,10 +58,12 @@ export default class Particles {
       this.settings.animation ? this.settings.animation.speed : 0,
       this.settings.animation ? true : false,
     );
-    this.instancedTexture.clearInstances(); // Ensure clean state on creation
+    this.instancedTexture.clearInstances();
     this.gameObject.addComponent(this.instancedTexture);
-    
-    // Initialize clean state
+
+    /** @private */
+    this._pool = [];
+
     this.particles = [];
     this.active = false;
     this.elapsed = 0;
@@ -85,10 +87,8 @@ export default class Particles {
     this.stopped = false;
     this.lastEmitPosition = newPosition;
     if (this.settings.emissionRate === Infinity) {
-      // One-shot: emit all at once
       this.emitParticles(this.settings.amount, newPosition);
     }
-    // For continuous, particles will be emitted in update()
   }
 
   /**
@@ -113,27 +113,78 @@ export default class Particles {
         x: Math.cos(finalAngle) * speed,
         y: Math.sin(finalAngle) * speed,
       };
-      const offsetVariation = (Math.random() - 0.5) * this.offset * 0.5;
+      const spawn = this._spawnOffset(finalAngle);
       const pos = new Vector3(
-        position.x + Math.cos(finalAngle) * (this.offset + offsetVariation),
-        position.y + Math.sin(finalAngle) * (this.offset + offsetVariation),
+        position.x + spawn.x,
+        position.y + spawn.y,
         position.z
       );
-      const particleSettings = new ParticleSettings({
-        ...this.settings,
-        velocity,
-      });
-      if(this.particles.length < this.instanceCount) {
-        let particle = new Particle(
-          this.instancedTexture,
-          pos,
-          this.rotation,
-          this.scale,
-          particleSettings
-        );
+      if (this.particles.length < this.instanceCount) {
+        let particle = this._pool.pop();
+        if (particle) {
+          particle.reset(
+            this.instancedTexture,
+            pos,
+            this.rotation,
+            this.scale,
+            this.settings,
+            velocity
+          );
+        } else {
+          particle = new Particle(
+            this.instancedTexture,
+            pos,
+            this.rotation,
+            this.scale,
+            this.settings,
+            velocity
+          );
+        }
         this.particles.push(particle);
       }
-      
+    }
+  }
+
+  /**
+   * @method _spawnOffset
+   * @description Returns a spawn offset { x, y } from the emitter center based on
+   * the configured emitter shape.
+   * @param {number} finalAngle - The chosen emission angle (for the cone shape)
+   * @private
+   */
+  _spawnOffset(finalAngle) {
+    const s = this.settings;
+    const radius = s.shapeRadius || 0;
+    switch (s.shape) {
+      case "point":
+        return { x: 0, y: 0 };
+      case "circle": {
+        const a = Math.random() * Math.PI * 2;
+        const r = Math.sqrt(Math.random()) * radius;
+        return { x: Math.cos(a) * r, y: Math.sin(a) * r };
+      }
+      case "ring": {
+        const a = Math.random() * Math.PI * 2;
+        return { x: Math.cos(a) * radius, y: Math.sin(a) * radius };
+      }
+      case "box": {
+        const w = s.shapeSize ? s.shapeSize.x : 0;
+        const h = s.shapeSize ? s.shapeSize.y : 0;
+        return {
+          x: (Math.random() - 0.5) * w,
+          y: (Math.random() - 0.5) * h,
+        };
+      }
+      case "cone":
+      default: {
+        const baseOffset = this.offset || 0;
+        const offsetVariation = (Math.random() - 0.5) * baseOffset * 0.5;
+        const dist = baseOffset + offsetVariation;
+        return {
+          x: Math.cos(finalAngle) * dist,
+          y: Math.sin(finalAngle) * dist,
+        };
+      }
     }
   }
 
@@ -145,7 +196,6 @@ export default class Particles {
   update(deltaTime) {
     if (!this.active || this.stopped) return;
     this.elapsed += deltaTime;
-    // Continuous emission
     if (
       this.settings.emissionRate !== Infinity &&
       this.elapsed <= this.duration
@@ -164,25 +214,24 @@ export default class Particles {
         this.emittedParticles += toEmit;
       }
     }
-    // Update all particles and remove dead ones
     this.particles = this.particles.filter((particle) => {
       particle.update(deltaTime);
       if (!particle.isAlive()) {
         particle.destroy();
+        this._pool.push(particle);
         return false;
       }
       return true;
     });
-    if (
-      this.elapsed >= this.duration &&
-      this.settings.emissionRate !== Infinity
-    ) {
+    const pastDuration = this.elapsed >= this.duration;
+    if (pastDuration && this.settings.emissionRate !== Infinity) {
       this.stopped = true;
     }
-    if (this.stopped && this.particles.length === 0) {
+    if ((this.stopped || pastDuration) && this.particles.length === 0) {
       this.instancedTexture.clearInstances();
       this.particles = [];
       this.active = false;
+      this.stopped = true;
     }
   }
 

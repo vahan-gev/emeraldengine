@@ -12,13 +12,13 @@ class Square2D extends Drawable {
     const verticesBuffer = initVertexBuffer(GLManager.getGL(), vertices);
     const textureCoordinates = [
       1.0,
-      1.0, // Top-right
-      0.0,
-      1.0, // Top-left
       1.0,
-      0.0, // Bottom-right
       0.0,
-      0.0, // Bottom-left
+      1.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
     ];
     const texCoordBuffer = initVertexBuffer(
       GLManager.getGL(),
@@ -87,11 +87,9 @@ class Circle2D extends Drawable {
     const vertices = [];
     const textureCoordinates = [];
 
-    // Add center vertex
     vertices.push(0, 0);
     textureCoordinates.push(0.5, 0.5);
 
-    // Add perimeter vertices
     for (let i = 0; i <= segments; i++) {
       const angle = (i * 2 * Math.PI) / segments;
       const x = radius * Math.cos(angle);

@@ -31,13 +31,13 @@ class Texture extends Drawable {
     const verticesBuffer = initVertexBuffer(GLManager.getGL(), vertices);
     const textureCoordinates = [
       1.0,
-      1.0, // Top-right
-      0.0,
-      1.0, // Top-left
       1.0,
-      0.0, // Bottom-right
       0.0,
-      0.0, // Bottom-left
+      1.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
     ];
     const texCoordBuffer = initVertexBuffer(
       GLManager.getGL(),

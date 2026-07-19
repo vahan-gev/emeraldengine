@@ -26,7 +26,6 @@ class Instance {
     this.parent = null;
     this.frame = frame;
 
-    // Animation properties
     this.isAnimating = false;
     this.animationFrames = [];
     this.currentAnimationIndex = 0;
@@ -35,8 +34,45 @@ class Instance {
     this.playOnce = false;
     this.originalFrame = frame;
 
-    // Components
     this.components = [];
+
+    /** @private */
+    this._tint = null;
+  }
+
+  /**
+   * @method setColor
+   * @description Sets this instance's tint. Accepts a Color (0..255 channels) or
+   * raw 0..1 components. Multiplies the texture/base color in the shader.
+   * @param {Color|number} colorOrR - A Color instance, or the red channel
+   * @param {number} [g]
+   * @param {number} [b]
+   * @param {number} [a]
+   */
+  setColor(colorOrR, g, b, a = 1) {
+    if (colorOrR && typeof colorOrR === "object") {
+      this._tint = [
+        (colorOrR.r ?? 255) / 255,
+        (colorOrR.g ?? 255) / 255,
+        (colorOrR.b ?? 255) / 255,
+        (colorOrR.a ?? 255) / 255,
+      ];
+    } else {
+      this._tint = [colorOrR, g, b, a];
+    }
+  }
+
+  /**
+   * @method setTexCoords
+   * @description Gives this instance an explicit UV quad (8 floats, one vec2
+   * per corner in the same order as getFrameTexCoords) instead of the shared
+   * frame grid. Lets one InstancedTexture batch tiles from an atlas with
+   * margins/spacing or per-instance flips. Pass null to go back to `frame`.
+   * @param {number[]|Float32Array|null} uv8 - 8 UV floats, or null to clear
+   */
+  setTexCoords(uv8) {
+    /** @private */
+    this._regionUV = uv8 ? Array.from(uv8) : null;
   }
 
   /**
@@ -131,15 +167,15 @@ class Instance {
         if (this.playOnce) {
           this.stopAnimation();
         } else {
-          this.currentAnimationIndex = 0; // Loop animation
+          this.currentAnimationIndex = 0;
         }
       }
 
       this.lastFrameTime = currentTime;
-      return true; // Frame changed
+      return true;
     }
 
-    return false; // No frame change
+    return false;
   }
 
   /**

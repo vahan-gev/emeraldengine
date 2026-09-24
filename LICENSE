@@ -1,0 +1,92 @@
+EMERALDENGINE SOURCE-AVAILABLE LICENSE
+Version 1.0 — September 2026
+
+Copyright (c) 2026 Vahan Gevorgyan
+
+1. GRANT OF RIGHTS
+
+Subject to the terms of this License, you are granted a worldwide,
+non-exclusive, royalty-free license to:
+
+- use EmeraldEngine;
+- copy EmeraldEngine;
+- modify and adapt EmeraldEngine;
+- create derivative works based on EmeraldEngine;
+- fork EmeraldEngine;
+- use EmeraldEngine, including modified versions, to create games
+  and other applications; and
+- distribute and commercially exploit games and other applications
+  created using EmeraldEngine.
+
+You may use EmeraldEngine for personal, educational, non-commercial,
+and commercial purposes.
+
+2. GAMES AND APPLICATIONS
+
+You may distribute, publish, license, and sell games and other
+applications created using EmeraldEngine, including games and
+applications that contain modified portions of EmeraldEngine.
+
+You are not required to release the source code of your games or
+applications.
+
+3. RESTRICTIONS
+
+You may not:
+
+- sell EmeraldEngine itself;
+- sell, license, or otherwise commercially distribute a standalone
+  copy or modified version of EmeraldEngine;
+- distribute EmeraldEngine or a derivative work as a standalone
+  game engine, framework, library, SDK, development kit, or similar
+  software product;
+- rebrand, rename, or represent EmeraldEngine or a derivative work
+  as an independently created game engine;
+- offer EmeraldEngine or a derivative work as a paid software
+  product whose primary purpose is to provide the functionality
+  of EmeraldEngine; or
+- remove or alter this License or the copyright notice when
+  redistributing EmeraldEngine or a derivative work.
+
+4. FREE REDISTRIBUTION
+
+You may share EmeraldEngine and modified versions of EmeraldEngine
+for free, provided that:
+
+- this License is included with the distribution;
+- the original copyright notice is retained; and
+- the software is not presented as your own original game engine.
+
+5. OWNERSHIP
+
+EmeraldEngine and its original source code remain the property of
+the copyright holder. This License does not transfer ownership of
+EmeraldEngine to you.
+
+You retain ownership of original code and other material that you
+independently create when modifying or extending EmeraldEngine,
+subject to the rights granted under this License.
+
+6. TRADEMARKS
+
+This License does not grant permission to use the name "EmeraldEngine"
+or any associated logos, trademarks, or branding except as necessary
+to accurately describe use of the software.
+
+7. NO WARRANTY
+
+EmeraldEngine is provided "AS IS", without warranty of any kind,
+express or implied. The copyright holder shall not be liable for
+any claim, damages, or other liability arising from the use of
+EmeraldEngine.
+
+8. TERMINATION
+
+Your rights under this License terminate if you materially violate
+its terms. Rights may be reinstated if the violation is cured within
+a reasonable period after receiving notice of the violation.
+
+9. ACCEPTANCE
+
+By using, copying, modifying, or distributing EmeraldEngine, you
+agree to the terms of this License.
